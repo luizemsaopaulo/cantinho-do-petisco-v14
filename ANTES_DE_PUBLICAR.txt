@@ -1,4 +1,4 @@
-CANTINHO DO PETISCO — V16 — ANTES DE PUBLICAR
+CANTINHO DO PETISCO — V17 — ANTES DE PUBLICAR
 
 1) Publique TODOS os arquivos desta pasta no repositório:
    cantinho-do-petisco-v14
@@ -13,15 +13,23 @@ CANTINHO DO PETISCO — V16 — ANTES DE PUBLICAR
 
 3) Confirme que estes arquivos existem online:
    assets/whatsapp-preview-v2.jpg
-   assets/qr-delivery-v16.png
-   assets/qr-restaurante-v16.png
+   assets/qr-delivery-v17.png
+   assets/qr-restaurante-v17.png
 
 4) Links após publicação:
-   Delivery: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/?v=16
-   Restaurante: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/restaurante.html?v=16
-   Admin: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/admin.html?v=16
+   Delivery: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/?v=17
+   Restaurante: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/restaurante.html?v=17
+   Admin: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/admin.html?v=17
 
 5) O prompt nativo de instalação do PWA precisa do site publicado por HTTPS.
 
 6) Se o banco ainda não recebeu a migração de quantidade dos adicionais, execute antes:
    supabase/MIGRACAO_QUANTIDADE_ADICIONAIS_V9.sql
+
+
+LOGIN PWA ADMIN — V17
+- Publique todos os arquivos, principalmente js/supabase-rest.js, js/admin.js, service-worker.js e admin.html.
+- Abra o Admin com internet depois da publicação para o service worker atualizar para v17.
+- Faça login dentro do PWA uma vez com “Manter acesso neste aparelho” marcado.
+- “Salvar senha no navegador” depende do gerenciador de senhas do Chromium/Edge; a confirmação é do próprio navegador.
+- A V17 não grava sua senha em localStorage/IndexedDB. O site guarda a sessão/refresh token; a senha, quando aceita, fica no gerenciador do navegador.

@@ -104,16 +104,55 @@
     for(const g of oldGroups)if(!keptGroupIds.has(g.id))await api.deleteOptionGroup(g.id);
   }
 
+  let credentialAutoTried=false;
+  const passwordCredentialSupported=()=>('PasswordCredential' in window)&&!!navigator.credentials;
+  async function saveBrowserCredential(email,password){
+    if(!$('#saveAdminPassword')?.checked||!passwordCredentialSupported()||!navigator.credentials?.store)return false;
+    try{
+      const icon=new URL('assets/icon-admin-192.png',location.href).href;
+      const credential=new PasswordCredential({id:email,password,name:'Cantinho Admin',iconURL:icon});
+      await navigator.credentials.store(credential);
+      return true;
+    }catch{return false;}
+  }
+  async function useSavedCredential(mediation='optional'){
+    if(!passwordCredentialSupported()||!navigator.credentials?.get)return false;
+    try{
+      const credential=await navigator.credentials.get({password:true,mediation});
+      if(!credential||credential.type!=='password')return false;
+      $('#adminEmail').value=credential.id||'';
+      $('#adminPassword').value=credential.password||'';
+      if(!$('#adminEmail').value||!$('#adminPassword').value)return false;
+      els.loginForm.requestSubmit();
+      return true;
+    }catch{return false;}
+  }
   async function boot(){
     if(C.DEMO_MODE) $('#demoCredentials').classList.remove('hidden');
-    const session=await api.ensureSession();
-    if(!session){showLogin();return;}
-    try{ if(await api.isAdmin()){ await enterAdmin(session); } else { api.logout(); showLogin('Este usuário não está autorizado como administrador.'); } }
-    catch(e){api.logout();showLogin(e.message||'Não foi possível validar a sessão.');}
+    const remembered=api.getRememberedEmail?.();if(remembered&&!$('#adminEmail').value)$('#adminEmail').value=remembered;
+    $('#savedCredentialLoginBtn')?.classList.toggle('hidden',!passwordCredentialSupported());
+    try{
+      const session=await api.ensureSession();
+      if(!session){
+        showLogin();
+        if(!credentialAutoTried&&passwordCredentialSupported()){
+          credentialAutoTried=true;
+          await useSavedCredential('silent');
+        }
+        return;
+      }
+      if(await api.isAdmin()){await enterAdmin(session);return;}
+      await api.clearSession?.();
+      showLogin('A sessão salva não é mais válida ou este usuário não está autorizado.');
+    }catch(e){
+      const saved=await api.hasSavedSession?.();
+      showLogin(e.message||'Não foi possível validar a sessão.',!!saved);
+    }
   }
-  function showLogin(message=''){
+  function showLogin(message='',canRetry=false){
     els.login.classList.remove('hidden');els.admin.classList.add('hidden');
     els.loginMessage.classList.toggle('hidden',!message);els.loginMessage.textContent=message;
+    $('#retrySavedSessionBtn')?.classList.toggle('hidden',!canRetry);
   }
   async function enterAdmin(session){
     els.login.classList.add('hidden');els.admin.classList.remove('hidden');els.identity.textContent=session.user?.email||'Administrador autorizado';
@@ -331,8 +370,10 @@
     $('#productsTab').classList.toggle('hidden',name!=='products');$('#specialTab').classList.toggle('hidden',name!=='special');
   }
   function initEvents(){
-    els.loginForm.addEventListener('submit',async e=>{e.preventDefault();els.loginBtn.disabled=true;els.loginBtn.textContent='Entrando…';els.loginMessage.classList.add('hidden');const persistent=$('#keepAdminSignedIn')?.checked!==false;api.setPersistentSession?.(persistent);try{const s=await api.login($('#adminEmail').value.trim(),$('#adminPassword').value);if(!(await api.isAdmin()))throw new Error('Usuário autenticado, mas sem permissão de administrador.');await enterAdmin(s);}catch(err){api.logout();if(persistent)api.setPersistentSession?.(true);showLogin(err.message||'Falha no login.');}finally{els.loginBtn.disabled=false;els.loginBtn.textContent='Entrar';}});
-    $('#logoutBtn').onclick=()=>{api.logout();location.reload();};
+    els.loginForm.addEventListener('submit',async e=>{e.preventDefault();els.loginBtn.disabled=true;els.loginBtn.textContent='Entrando…';els.loginMessage.classList.add('hidden');$('#retrySavedSessionBtn')?.classList.add('hidden');const persistent=$('#keepAdminSignedIn')?.checked!==false;const email=$('#adminEmail').value.trim(),password=$('#adminPassword').value;api.setPersistentSession?.(persistent);api.rememberEmail?.(email);if(persistent)api.requestPersistentStorage?.();try{const s=await api.login(email,password);if(!(await api.isAdmin())){await api.clearSession?.();throw new Error('Usuário autenticado, mas sem permissão de administrador.');}if($('#saveAdminPassword')?.checked)await saveBrowserCredential(email,password);await enterAdmin(s);}catch(err){showLogin(err.message||'Falha no login.',await api.hasSavedSession?.());}finally{els.loginBtn.disabled=false;els.loginBtn.textContent='Entrar';}});
+    $('#savedCredentialLoginBtn')?.addEventListener('click',()=>useSavedCredential('optional'));
+    $('#retrySavedSessionBtn')?.addEventListener('click',()=>{showLogin('Tentando recuperar sua sessão salva…');boot();});
+    $('#logoutBtn').onclick=async()=>{await api.logout();location.reload();};
     document.querySelectorAll('.admin-tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
     els.search.addEventListener('input',()=>{els.clearSearch.classList.toggle('hidden',!els.search.value);renderProducts();});els.clearSearch.onclick=()=>{els.search.value='';els.clearSearch.classList.add('hidden');renderProducts();els.search.focus();};els.filter.onchange=renderProducts;
     $('#expandAllCategories').onclick=()=>{state.collapsedCategories.clear();renderProducts();};

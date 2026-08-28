@@ -6,12 +6,12 @@
   <meta name="theme-color" content="#b20d18">
   <meta name="robots" content="noindex,nofollow">
   <title>Admin | Cantinho do Petisco</title>
-  <link rel="manifest" href="manifest-admin.webmanifest?v=16">
+  <link rel="manifest" href="manifest-admin.webmanifest?v=17">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Cantinho ADM">
-  <link rel="apple-touch-icon" href="assets/icon-admin-192.png?v=16">
-  <link rel="stylesheet" href="css/styles.css?v=16">
+  <link rel="apple-touch-icon" href="assets/icon-admin-192.png?v=17">
+  <link rel="stylesheet" href="css/styles.css?v=17">
 </head>
 <body class="admin-body">
   <main class="admin-shell">
@@ -28,9 +28,12 @@
         <label class="field-label">Senha
           <input id="adminPassword" name="password" type="password" autocomplete="current-password" required placeholder="••••••••">
         </label>
-        <label class="remember-login-card"><input id="keepAdminSignedIn" type="checkbox" checked><span><strong>Manter acesso neste aparelho</strong><small>Evita pedir a senha novamente ao fechar e abrir o navegador. Use somente no seu celular ou computador.</small></span></label>
-        <p class="password-manager-note">🔐 A senha não é gravada pelo site. Se o navegador oferecer <strong>Salvar senha</strong>, você pode aceitar para usar o gerenciador de senhas do aparelho.</p>
+        <label class="remember-login-card"><input id="keepAdminSignedIn" type="checkbox" checked><span><strong>Manter acesso neste aparelho</strong><small>Salva a sessão também no armazenamento persistente do PWA para evitar pedir a senha a cada abertura.</small></span></label>
+        <label class="remember-login-card save-password-card"><input id="saveAdminPassword" type="checkbox" checked><span><strong>Salvar senha no navegador</strong><small>Quando o Chromium/Edge permitir, a senha fica no gerenciador de senhas do navegador — não no código do site.</small></span></label>
+        <p id="loginPersistenceStatus" class="password-manager-note">🔐 No PWA, o site tenta manter sua sessão com o token de renovação. Se a sessão expirar de verdade, você pode usar a senha salva pelo navegador.</p>
         <button id="loginBtn" class="primary-button" type="submit">Entrar</button>
+        <button id="savedCredentialLoginBtn" class="secondary-button hidden" type="button">🔐 Usar senha salva</button>
+        <button id="retrySavedSessionBtn" class="secondary-button hidden" type="button">↻ Tentar sessão salva novamente</button>
         <p id="demoCredentials" class="demo-credentials hidden">Modo demonstração: admin@demo.local / 123456</p>
       </form>
       <div id="loginMessage" class="form-message hidden"></div>
@@ -254,7 +257,7 @@
   <script src="js/config.js"></script>
   <script src="js/mock-data.js"></script>
   <script src="js/supabase-rest.js"></script>
-  <script src="js/admin.js?v=16"></script>
-  <script src="js/pwa-admin.js?v=16"></script>
+  <script src="js/admin.js?v=17"></script>
+  <script src="js/pwa-admin.js?v=17"></script>
 </body>
 </html>

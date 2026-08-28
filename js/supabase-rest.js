@@ -5,6 +5,9 @@
     constructor() {
       this.sessionKey = 'cantinho_petisco_admin_session';
       this.persistenceKey = 'cantinho_petisco_admin_persistent';
+      this.emailKey = 'cantinho_petisco_admin_email';
+      this.dbName = 'cantinho_petisco_admin_auth_v1';
+      this.dbStore = 'auth';
       this.memorySession = null;
     }
 
@@ -19,21 +22,100 @@
       try { return localStorage.getItem(this.persistenceKey) === '1'; } catch { return false; }
     }
 
+    rememberEmail(email) {
+      try {
+        if (email) localStorage.setItem(this.emailKey, email);
+        else localStorage.removeItem(this.emailKey);
+      } catch {}
+    }
+
+    getRememberedEmail() {
+      try { return localStorage.getItem(this.emailKey) || ''; } catch { return ''; }
+    }
+
+    async requestPersistentStorage() {
+      try {
+        if (!navigator.storage?.persist) return false;
+        if (await navigator.storage.persisted?.()) return true;
+        return !!(await navigator.storage.persist());
+      } catch { return false; }
+    }
+
+    openAuthDb() {
+      return new Promise((resolve, reject) => {
+        if (!('indexedDB' in window)) return resolve(null);
+        const req = indexedDB.open(this.dbName, 1);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains(this.dbStore)) db.createObjectStore(this.dbStore);
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error || new Error('Falha ao abrir armazenamento local.'));
+      });
+    }
+
+    async vaultSet(key, value) {
+      try {
+        const db = await this.openAuthDb();
+        if (!db) return false;
+        await new Promise((resolve, reject) => {
+          const tx = db.transaction(this.dbStore, 'readwrite');
+          tx.objectStore(this.dbStore).put(value, key);
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+        });
+        db.close();
+        return true;
+      } catch { return false; }
+    }
+
+    async vaultGet(key) {
+      try {
+        const db = await this.openAuthDb();
+        if (!db) return null;
+        const value = await new Promise((resolve, reject) => {
+          const tx = db.transaction(this.dbStore, 'readonly');
+          const req = tx.objectStore(this.dbStore).get(key);
+          req.onsuccess = () => resolve(req.result ?? null);
+          req.onerror = () => reject(req.error);
+        });
+        db.close();
+        return value;
+      } catch { return null; }
+    }
+
+    async vaultDelete(key) {
+      try {
+        const db = await this.openAuthDb();
+        if (!db) return;
+        await new Promise((resolve, reject) => {
+          const tx = db.transaction(this.dbStore, 'readwrite');
+          tx.objectStore(this.dbStore).delete(key);
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+        });
+        db.close();
+      } catch {}
+    }
+
     storeSession(session) {
       this.memorySession = session || null;
       try {
         if (!session) {
           sessionStorage.removeItem(this.sessionKey);
           localStorage.removeItem(this.sessionKey);
+          this.vaultDelete(this.sessionKey);
           return;
         }
         const raw = JSON.stringify(session);
         if (this.isPersistentSession()) {
           localStorage.setItem(this.sessionKey, raw);
           sessionStorage.removeItem(this.sessionKey);
+          this.vaultSet(this.sessionKey, session);
         } else {
           sessionStorage.setItem(this.sessionKey, raw);
           localStorage.removeItem(this.sessionKey);
+          this.vaultDelete(this.sessionKey);
         }
       } catch {}
     }
@@ -46,6 +128,33 @@
         if (sessionRaw) return JSON.parse(sessionRaw);
       } catch {}
       return this.memorySession;
+    }
+
+    async restoreSession() {
+      const direct = this.readStoredSession();
+      if (direct) return direct;
+      if (!this.isPersistentSession()) return null;
+      const vaulted = await this.vaultGet(this.sessionKey);
+      if (!vaulted) return null;
+      this.memorySession = vaulted;
+      try { localStorage.setItem(this.sessionKey, JSON.stringify(vaulted)); } catch {}
+      return vaulted;
+    }
+
+    async hasSavedSession() {
+      if (this.readStoredSession()) return true;
+      if (!this.isPersistentSession()) return false;
+      return !!(await this.vaultGet(this.sessionKey));
+    }
+
+    async clearSession({ clearPreference = false } = {}) {
+      this.memorySession = null;
+      try {
+        sessionStorage.removeItem(this.sessionKey);
+        localStorage.removeItem(this.sessionKey);
+        if (clearPreference) localStorage.removeItem(this.persistenceKey);
+      } catch {}
+      await this.vaultDelete(this.sessionKey);
     }
 
     baseHeaders(token, extra = {}) {
@@ -62,13 +171,17 @@
       const response = await fetch(`${C.SUPABASE_URL}${path}`, options);
       if (!response.ok) {
         let detail = '';
+        let body = null;
         try {
-          const body = await response.json();
+          body = await response.json();
           detail = body.message || body.msg || body.error_description || body.error || JSON.stringify(body);
         } catch {
           detail = await response.text();
         }
-        throw new Error(detail || `Erro ${response.status}`);
+        const err = new Error(detail || `Erro ${response.status}`);
+        err.status = response.status;
+        err.body = body;
+        throw err;
       }
       if (response.status === 204) return null;
       const text = await response.text();
@@ -124,11 +237,14 @@
     }
 
     async ensureSession() {
-      let session = this.getSession();
+      let session = await this.restoreSession();
       if (!session) return null;
       if (C.DEMO_MODE) return session;
       if ((session.expires_at || 0) - Date.now() > 60000) return session;
-      if (!session.refresh_token) return null;
+      if (!session.refresh_token) {
+        await this.clearSession();
+        return null;
+      }
       try {
         const data = await this.request('/auth/v1/token?grant_type=refresh_token', {
           method: 'POST',
@@ -138,27 +254,42 @@
         session = { ...data, expires_at: Date.now() + (data.expires_in || 3600) * 1000 };
         this.storeSession(session);
         return session;
-      } catch {
-        this.logout();
-        return null;
+      } catch (err) {
+        // Só apaga a sessão quando o Supabase confirma que a credencial não é mais válida.
+        // Falha de rede/servidor não deve deslogar um PWA que estava lembrado.
+        if (err?.status === 400 || err?.status === 401 || err?.status === 403) {
+          await this.clearSession();
+          return null;
+        }
+        const retry = new Error('Seu acesso continua salvo neste aparelho, mas não foi possível renovar a sessão agora. Verifique a internet e tente novamente.');
+        retry.code = 'SAVED_SESSION_TEMPORARY_FAILURE';
+        retry.cause = err;
+        throw retry;
       }
     }
 
-    logout() {
-      this.storeSession(null);
-      this.setPersistentSession(false);
+    async logout() {
+      await this.clearSession();
     }
 
     async isAdmin() {
       const s = await this.ensureSession();
       if (!s) return false;
       if (C.DEMO_MODE) return true;
-      const out = await this.request('/rest/v1/rpc/is_admin', {
-        method: 'POST',
-        headers: this.baseHeaders(s.access_token),
-        body: '{}',
-      });
-      return out === true;
+      try {
+        const out = await this.request('/rest/v1/rpc/is_admin', {
+          method: 'POST',
+          headers: this.baseHeaders(s.access_token),
+          body: '{}',
+        });
+        return out === true;
+      } catch (err) {
+        if (err?.status === 401 || err?.status === 403) {
+          await this.clearSession();
+          return false;
+        }
+        throw err;
+      }
     }
 
     async adminGetAll() {
