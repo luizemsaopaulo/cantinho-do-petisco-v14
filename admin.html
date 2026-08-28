@@ -6,12 +6,12 @@
   <meta name="theme-color" content="#b20d18">
   <meta name="robots" content="noindex,nofollow">
   <title>Admin | Cantinho do Petisco</title>
-  <link rel="manifest" href="manifest-admin.webmanifest?v=14">
+  <link rel="manifest" href="manifest-admin.webmanifest?v=15">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Cantinho ADM">
-  <link rel="apple-touch-icon" href="assets/icon-admin-192.png?v=14">
-  <link rel="stylesheet" href="css/styles.css?v=14">
+  <link rel="apple-touch-icon" href="assets/icon-admin-192.png?v=15">
+  <link rel="stylesheet" href="css/styles.css?v=15">
 </head>
 <body class="admin-body">
   <main class="admin-shell">
@@ -35,21 +35,42 @@
     </section>
 
     <section id="adminView" class="admin-dashboard hidden">
-      <header class="admin-header admin-header-v5">
+      <header class="admin-header admin-header-v5 admin-header-clean">
         <div class="admin-title-block">
           <span class="eyebrow">Cantinho do Petisco</span>
           <h1>Painel administrativo</h1>
           <p>Gerencie o cardápio por setores, fotos, disponibilidade e o prato de cada dia da semana.</p>
           <div class="admin-user-line">Conectado como <strong id="adminIdentity"></strong></div>
         </div>
-        <div class="admin-header-actions">
-          <a class="secondary-button small" href="index.html" target="_blank" rel="noopener">Ver delivery</a>
-          <a class="secondary-button small" href="restaurante.html" target="_blank" rel="noopener">Ver restaurante</a>
+        <div class="admin-header-actions admin-header-actions-clean">
+          <button id="adminToolsMenuBtn" class="admin-menu-toggle" type="button" aria-label="Abrir menu" aria-controls="adminToolsMenu" aria-expanded="false" title="Menu">
+            <span class="hamburger-lines" aria-hidden="true"><i></i><i></i><i></i></span>
+          </button>
           <button id="logoutBtn" class="secondary-button small" type="button">Sair</button>
         </div>
       </header>
 
-      <section class="admin-quick-access" aria-labelledby="quickAccessTitle"><div class="admin-quick-title"><div><span class="eyebrow">Acesso rápido</span><h2 id="quickAccessTitle">Seu Cantinho na palma da mão</h2><p>Abra, compartilhe ou instale os atalhos do restaurante.</p></div><button id="installAdminPwa" class="primary-button hidden" type="button">📲 Instalar Cantinho Admin</button></div><div class="admin-quick-grid"><button id="openDeliveryQuick" class="quick-card" type="button"><span>🛵</span><strong>Acessar meu catálogo</strong><small>Delivery e retirada</small></button><button id="openRestaurantQuick" class="quick-card" type="button"><span>🍽️</span><strong>Abrir Restaurante</strong><small>Cardápio completo presencial</small></button><button id="shareDeliveryWhatsApp" class="quick-card whatsapp" type="button"><span>💬</span><strong>Compartilhar Delivery</strong><small>Enviar pelo WhatsApp</small></button><button id="shareRestaurantWhatsApp" class="quick-card whatsapp" type="button"><span>💬</span><strong>Compartilhar Restaurante</strong><small>Enviar pelo WhatsApp</small></button><button id="copyDeliveryLink" class="quick-card" type="button"><span>🔗</span><strong>Copiar Delivery</strong><small>Copiar link</small></button><button id="copyRestaurantLink" class="quick-card" type="button"><span>🔗</span><strong>Copiar Restaurante</strong><small>Copiar link</small></button><button id="qrDeliveryBtn" class="quick-card" type="button"><span>▦</span><strong>QR Delivery</strong><small>Mostrar código para clientes</small></button><button id="qrRestaurantBtn" class="quick-card" type="button"><span>▦</span><strong>QR Restaurante</strong><small>Ideal para mesa ou balcão</small></button></div></section>
+      <div id="adminToolsOverlay" class="admin-tools-overlay hidden" aria-hidden="true"></div>
+      <aside id="adminToolsMenu" class="admin-tools-menu" aria-hidden="true" aria-labelledby="adminToolsMenuTitle">
+        <div class="admin-tools-menu-head">
+          <div>
+            <span class="eyebrow">Atalhos</span>
+            <h2 id="adminToolsMenuTitle">Menu</h2>
+          </div>
+          <button id="closeAdminToolsMenu" class="admin-tools-close" type="button" aria-label="Fechar menu">×</button>
+        </div>
+        <nav class="admin-tools-list" aria-label="Ferramentas do painel">
+          <button id="installAdminPwa" class="admin-tools-item admin-tools-install hidden" type="button"><span>📲</span><strong>Instalar Cantinho Admin</strong></button>
+          <button id="openDeliveryQuick" class="admin-tools-item" type="button"><span>🛵</span><strong>Abrir página Delivery</strong></button>
+          <button id="openRestaurantQuick" class="admin-tools-item" type="button"><span>🍽️</span><strong>Abrir página Restaurante</strong></button>
+          <div class="admin-tools-divider" role="separator"></div>
+          <button id="shareDeliveryWhatsApp" class="admin-tools-item admin-tools-whatsapp" type="button"><span>💬</span><strong>Compartilhar Delivery</strong></button>
+          <button id="shareRestaurantWhatsApp" class="admin-tools-item admin-tools-whatsapp" type="button"><span>💬</span><strong>Compartilhar Restaurante</strong></button>
+          <div class="admin-tools-divider" role="separator"></div>
+          <button id="qrDeliveryBtn" class="admin-tools-item" type="button"><span>▦</span><strong>QR Code Delivery</strong></button>
+          <button id="qrRestaurantBtn" class="admin-tools-item" type="button"><span>▦</span><strong>QR Code Restaurante</strong></button>
+        </nav>
+      </aside>
       <div class="admin-metrics">
         <article><span>Produtos cadastrados</span><strong id="metricProducts">0</strong></article>
         <article><span>Disponíveis no cardápio</span><strong id="metricAvailable">0</strong></article>
@@ -215,7 +236,7 @@
   <script src="js/config.js"></script>
   <script src="js/mock-data.js"></script>
   <script src="js/supabase-rest.js"></script>
-  <script src="js/admin.js?v=14"></script>
-  <script src="js/pwa-admin.js?v=14"></script>
+  <script src="js/admin.js?v=15"></script>
+  <script src="js/pwa-admin.js?v=15"></script>
 </body>
 </html>

@@ -366,5 +366,44 @@ body{
   .option-admin-row>.delete-mini{justify-self:end}
   .option-editor-toolbar{align-items:stretch;flex-direction:column}
 }
-/* V14 PWA + CENTRAL ADMIN */
-.pwa-install-inline{border:1px solid #d8b668;background:#fff8e9;color:#6f1820;border-radius:999px;padding:8px 12px;font-size:.76rem;font-weight:850;box-shadow:0 5px 15px rgba(92,25,31,.06)}.pwa-install-inline:hover{background:#fff0cf}.pwa-install-suggestion{position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:115;width:min(690px,calc(100% - 28px));background:#fff;border:1px solid #ead9d3;border-radius:20px;box-shadow:0 22px 60px rgba(40,23,20,.22);padding:14px 16px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:13px}.pwa-install-icon{width:44px;height:44px;border-radius:14px;background:#fff1d5;display:grid;place-items:center;font-size:1.4rem}.pwa-install-copy strong,.pwa-install-copy span{display:block}.pwa-install-copy strong{font-size:.92rem}.pwa-install-copy span{font-size:.78rem;color:var(--muted);margin-top:3px}.pwa-install-actions{display:flex;align-items:center;gap:10px}.pwa-install-actions .compact{padding:9px 13px;border-radius:11px}.pwa-ios-dialog{max-width:430px}.pwa-ios-dialog .primary-button{width:100%;margin-top:10px}.admin-quick-access{background:linear-gradient(135deg,#fff,#fff8f1);border:1px solid #eadad1;border-radius:24px;padding:22px;margin-bottom:18px;box-shadow:var(--shadow-soft)}.admin-quick-title{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:16px}.admin-quick-title h2{font-family:Georgia,serif;margin:4px 0 4px;font-size:1.65rem}.admin-quick-title p{margin:0;color:var(--muted);font-size:.88rem}.admin-quick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.quick-card{appearance:none;text-align:left;border:1px solid var(--line);background:#fff;border-radius:16px;padding:14px;min-height:105px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:4px;color:var(--ink);box-shadow:0 5px 18px rgba(71,46,36,.035);transition:.16s ease}.quick-card:hover{transform:translateY(-2px);border-color:#d8b7b9;box-shadow:0 10px 24px rgba(71,46,36,.08)}.quick-card>span{font-size:1.35rem;margin-bottom:4px}.quick-card strong{font-size:.86rem}.quick-card small{color:var(--muted);line-height:1.3}.quick-card.whatsapp{border-color:#cce7d8;background:#f5fff9}.quick-card.whatsapp strong{color:#176b44}.qr-dialog{max-width:430px}.qr-dialog-image{width:min(290px,85vw);margin:12px auto;border:1px solid var(--line);border-radius:14px}.qr-dialog-link{font-size:.76rem;line-height:1.45;word-break:break-all;text-align:center;color:var(--muted);background:var(--soft);padding:10px;border-radius:11px}.qr-dialog .primary-button{width:100%}@media(max-width:900px){.admin-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:640px){.pwa-install-suggestion{bottom:max(92px,calc(env(safe-area-inset-bottom) + 78px));grid-template-columns:auto 1fr;padding:12px}.pwa-install-actions{grid-column:1/-1;justify-content:flex-end}.pwa-install-copy span{font-size:.74rem}.admin-quick-title{flex-direction:column}.admin-quick-title .primary-button{width:100%}.admin-quick-grid{grid-template-columns:1fr 1fr}.quick-card{min-height:98px;padding:12px}.quick-card strong{font-size:.8rem}.quick-card small{font-size:.7rem}}@media(max-width:390px){.admin-quick-grid{grid-template-columns:1fr}}
+
+/* V15 PWA + MENU ADMIN RECOLHIDO */
+.pwa-install-inline{border:1px solid #d8b668;background:#fff8e9;color:#6f1820;border-radius:999px;padding:8px 12px;font-size:.76rem;font-weight:850;box-shadow:0 5px 15px rgba(92,25,31,.06)}
+.pwa-install-inline:hover{background:#fff0cf}
+.pwa-install-suggestion{position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:115;width:min(690px,calc(100% - 28px));background:#fff;border:1px solid #ead9d3;border-radius:20px;box-shadow:0 22px 60px rgba(40,23,20,.22);padding:14px 16px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:13px}
+.pwa-install-icon{width:44px;height:44px;border-radius:14px;background:#fff1d5;display:grid;place-items:center;font-size:1.4rem}
+.pwa-install-copy strong,.pwa-install-copy span{display:block}.pwa-install-copy strong{font-size:.92rem}.pwa-install-copy span{font-size:.78rem;color:var(--muted);margin-top:3px}
+.pwa-install-actions{display:flex;align-items:center;gap:10px}.pwa-install-actions .compact{padding:9px 13px;border-radius:11px}
+.pwa-ios-dialog{max-width:430px}.pwa-ios-dialog .primary-button{width:100%;margin-top:10px}
+
+.admin-header-clean{align-items:center}
+.admin-header-actions-clean{align-items:center;flex-wrap:nowrap}
+.admin-menu-toggle{width:44px;height:42px;border:1px solid var(--line);border-radius:12px;background:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 12px rgba(71,46,36,.035);transition:.16s ease}
+.admin-menu-toggle:hover{border-color:#d4b8ba;background:#fff9f9}
+.hamburger-lines{width:20px;height:16px;display:flex;flex-direction:column;justify-content:space-between}
+.hamburger-lines i{display:block;height:2px;border-radius:999px;background:var(--wine);width:100%}
+.admin-tools-overlay{position:fixed;inset:0;background:rgba(37,24,21,.38);backdrop-filter:blur(1px);z-index:180}
+.admin-tools-menu{position:fixed;top:0;right:0;width:min(390px,calc(100vw - 26px));height:100dvh;background:#fff;z-index:181;box-shadow:-22px 0 55px rgba(33,22,20,.2);transform:translateX(105%);transition:transform .22s ease;display:flex;flex-direction:column;padding:max(22px,env(safe-area-inset-top)) 18px max(22px,env(safe-area-inset-bottom));visibility:hidden}
+.admin-tools-menu.open{transform:translateX(0);visibility:visible}
+.admin-tools-menu-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:3px 4px 16px;border-bottom:1px solid var(--line)}
+.admin-tools-menu-head>div{min-width:0;flex:1}
+.admin-tools-menu-head h2{font-family:Georgia,serif;font-size:1.75rem;margin:3px 0 0}
+.admin-tools-close{width:40px;height:40px;flex:0 0 40px;border:1px solid var(--line);background:#fff;border-radius:12px;color:var(--wine);font-size:1.7rem;line-height:1;cursor:pointer}
+.admin-tools-list{display:grid;gap:6px;padding:14px 0;overflow:auto}
+.admin-tools-item{appearance:none;width:100%;border:0;background:transparent;border-radius:13px;padding:13px 12px;display:grid;grid-template-columns:32px 1fr;align-items:center;gap:8px;text-align:left;color:var(--ink);cursor:pointer;transition:.14s ease}
+.admin-tools-item:hover,.admin-tools-item:focus-visible{background:#f8f2ee;outline:none}
+.admin-tools-item>span{font-size:1.25rem;text-align:center}.admin-tools-item strong{font-size:.88rem;font-weight:820}
+.admin-tools-item.admin-tools-whatsapp:hover,.admin-tools-item.admin-tools-whatsapp:focus-visible{background:#f0fbf5}.admin-tools-item.admin-tools-whatsapp strong{color:#176b44}
+.admin-tools-install{background:#fff8e9;color:#6f1820}.admin-tools-install:hover,.admin-tools-install:focus-visible{background:#fff0cf}
+.admin-tools-divider{height:1px;background:var(--line);margin:5px 10px}
+body.admin-tools-open{overflow:hidden}
+.qr-dialog{max-width:430px}.qr-dialog-image{width:min(290px,85vw);margin:12px auto;border:1px solid var(--line);border-radius:14px}.qr-dialog-link{font-size:.76rem;line-height:1.45;word-break:break-all;text-align:center;color:var(--muted);background:var(--soft);padding:10px;border-radius:11px}.qr-dialog .primary-button{width:100%}
+
+@media(max-width:640px){
+  .pwa-install-suggestion{bottom:max(92px,calc(env(safe-area-inset-bottom) + 78px));grid-template-columns:auto 1fr;padding:12px}
+  .pwa-install-actions{grid-column:1/-1;justify-content:flex-end}.pwa-install-copy span{font-size:.74rem}
+  .admin-header-clean{flex-direction:row;align-items:flex-start}.admin-header-clean .admin-title-block{min-width:0;flex:1}
+  .admin-header-clean .admin-title-block p{display:none}.admin-header-clean .admin-user-line{font-size:.72rem;margin-top:5px}
+  .admin-header-actions-clean{width:auto;margin-left:auto}.admin-header-actions-clean>*{flex:0 0 auto}
+  .admin-menu-toggle{width:42px;height:40px}.admin-tools-menu{width:min(360px,calc(100vw - 18px));padding-left:14px;padding-right:14px}
+}
