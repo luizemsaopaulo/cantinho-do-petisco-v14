@@ -367,7 +367,7 @@ body{
   .option-editor-toolbar{align-items:stretch;flex-direction:column}
 }
 
-/* V15 PWA + MENU ADMIN RECOLHIDO */
+/* PWA + MENU ADMIN RECOLHIDO */
 .pwa-install-inline{border:1px solid #d8b668;background:#fff8e9;color:#6f1820;border-radius:999px;padding:8px 12px;font-size:.76rem;font-weight:850;box-shadow:0 5px 15px rgba(92,25,31,.06)}
 .pwa-install-inline:hover{background:#fff0cf}
 .pwa-install-suggestion{position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:115;width:min(690px,calc(100% - 28px));background:#fff;border:1px solid #ead9d3;border-radius:20px;box-shadow:0 22px 60px rgba(40,23,20,.22);padding:14px 16px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:13px}
@@ -383,7 +383,7 @@ body{
 .hamburger-lines{width:20px;height:16px;display:flex;flex-direction:column;justify-content:space-between}
 .hamburger-lines i{display:block;height:2px;border-radius:999px;background:var(--wine);width:100%}
 .admin-tools-overlay{position:fixed;inset:0;background:rgba(37,24,21,.38);backdrop-filter:blur(1px);z-index:180}
-.admin-tools-menu{position:fixed;top:0;right:0;width:min(390px,calc(100vw - 26px));height:100dvh;background:#fff;z-index:181;box-shadow:-22px 0 55px rgba(33,22,20,.2);transform:translateX(105%);transition:transform .22s ease;display:flex;flex-direction:column;padding:max(22px,env(safe-area-inset-top)) 18px max(22px,env(safe-area-inset-bottom));visibility:hidden}
+.admin-tools-menu{position:fixed;top:0;left:0;width:min(390px,calc(100vw - 26px));height:100dvh;background:#fff;z-index:181;box-shadow:22px 0 55px rgba(33,22,20,.2);transform:translateX(-105%);transition:transform .22s ease;display:flex;flex-direction:column;padding:max(22px,env(safe-area-inset-top)) 18px max(22px,env(safe-area-inset-bottom));visibility:hidden}
 .admin-tools-menu.open{transform:translateX(0);visibility:visible}
 .admin-tools-menu-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:3px 4px 16px;border-bottom:1px solid var(--line)}
 .admin-tools-menu-head>div{min-width:0;flex:1}
@@ -407,3 +407,17 @@ body.admin-tools-open{overflow:hidden}
   .admin-header-actions-clean{width:auto;margin-left:auto}.admin-header-actions-clean>*{flex:0 0 auto}
   .admin-menu-toggle{width:42px;height:40px}.admin-tools-menu{width:min(360px,calc(100vw - 18px));padding-left:14px;padding-right:14px}
 }
+
+/* V16 — menu esquerdo, prato do dia no produto e permanência do login */
+.admin-header-left-menu{gap:18px}
+.admin-header-main{display:flex;align-items:flex-start;gap:14px;min-width:0;flex:1}
+.admin-header-main .admin-menu-toggle{margin-top:2px;flex:0 0 auto}
+.remember-login-card{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);background:#fffaf7;border-radius:13px;padding:12px 13px;cursor:pointer}
+.remember-login-card input{margin-top:3px;accent-color:var(--wine)}
+.remember-login-card span{display:grid;gap:3px}.remember-login-card strong{font-size:.86rem}.remember-login-card small,.password-manager-note{color:var(--muted);font-size:.75rem;line-height:1.45}
+.password-manager-note{margin:0;padding:0 2px}
+.product-special-toggle{margin-bottom:12px}
+.product-special-fields{align-items:end}
+.product-special-info{border:1px solid #ead8c4;background:#fff9ef;border-radius:13px;padding:12px 14px;display:grid;gap:4px;min-height:72px}
+.product-special-info strong{font-size:.8rem;color:var(--wine)}.product-special-info small{font-size:.74rem;line-height:1.45;color:var(--muted)}
+@media(max-width:640px){.admin-header-left-menu{flex-direction:row;align-items:flex-start}.admin-header-main{width:100%}.admin-header-main .admin-title-block{min-width:0}.admin-header-actions-clean{width:auto;flex:0 0 auto}.admin-header-actions-clean>*{flex:none}.admin-header-main .admin-menu-toggle{margin-top:1px}.product-special-fields{grid-template-columns:1fr}}

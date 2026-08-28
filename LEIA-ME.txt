@@ -1,4 +1,4 @@
-CANTINHO DO PETISCO — V15
+CANTINHO DO PETISCO — V16
 
 PÁGINAS
 - index.html = Delivery e retirada
@@ -15,7 +15,7 @@ PWA
 - Se dispensar, a sugestão fica suspensa por 30 dias.
 - Quando aberto como app instalado, a sugestão não aparece.
 
-ADMIN V15
+ADMIN V16
 O painel voltou ao formato limpo. As ferramentas extras ficam dentro do menu de três linhas no cabeçalho.
 
 Itens do menu:
@@ -41,8 +41,8 @@ Se esta instalação ainda não recebeu a migração de quantidade, execute:
 
 WHATSAPP / PREVIEW
 - Imagem: assets/whatsapp-preview-v2.jpg
-- Metadados sociais usam o repositório cantinho-do-petisco-v14 e cache-busting ?v=15.
+- Metadados sociais usam o repositório cantinho-do-petisco-v14 e cache-busting ?v=16.
 
 DEPURAÇÃO
-- Relatório atual: DEPURACAO_CHROMIUM_V15.txt
+- Relatório atual: DEPURACAO_CHROMIUM_V16.txt
 - Chromium real: menu ADM desktop/mobile, bloqueio do fundo, ações, QR, links e regressão do Delivery.

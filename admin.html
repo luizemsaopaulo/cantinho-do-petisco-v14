@@ -6,12 +6,12 @@
   <meta name="theme-color" content="#b20d18">
   <meta name="robots" content="noindex,nofollow">
   <title>Admin | Cantinho do Petisco</title>
-  <link rel="manifest" href="manifest-admin.webmanifest?v=15">
+  <link rel="manifest" href="manifest-admin.webmanifest?v=16">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Cantinho ADM">
-  <link rel="apple-touch-icon" href="assets/icon-admin-192.png?v=15">
-  <link rel="stylesheet" href="css/styles.css?v=15">
+  <link rel="apple-touch-icon" href="assets/icon-admin-192.png?v=16">
+  <link rel="stylesheet" href="css/styles.css?v=16">
 </head>
 <body class="admin-body">
   <main class="admin-shell">
@@ -23,11 +23,13 @@
       <p>Entre com o usuário autorizado no Supabase Auth.</p>
       <form id="loginForm" class="stack-form">
         <label class="field-label">E-mail
-          <input id="adminEmail" type="email" autocomplete="username" required placeholder="seu@email.com">
+          <input id="adminEmail" name="username" type="email" autocomplete="username" required placeholder="seu@email.com">
         </label>
         <label class="field-label">Senha
-          <input id="adminPassword" type="password" autocomplete="current-password" required placeholder="••••••••">
+          <input id="adminPassword" name="password" type="password" autocomplete="current-password" required placeholder="••••••••">
         </label>
+        <label class="remember-login-card"><input id="keepAdminSignedIn" type="checkbox" checked><span><strong>Manter acesso neste aparelho</strong><small>Evita pedir a senha novamente ao fechar e abrir o navegador. Use somente no seu celular ou computador.</small></span></label>
+        <p class="password-manager-note">🔐 A senha não é gravada pelo site. Se o navegador oferecer <strong>Salvar senha</strong>, você pode aceitar para usar o gerenciador de senhas do aparelho.</p>
         <button id="loginBtn" class="primary-button" type="submit">Entrar</button>
         <p id="demoCredentials" class="demo-credentials hidden">Modo demonstração: admin@demo.local / 123456</p>
       </form>
@@ -35,17 +37,19 @@
     </section>
 
     <section id="adminView" class="admin-dashboard hidden">
-      <header class="admin-header admin-header-v5 admin-header-clean">
-        <div class="admin-title-block">
-          <span class="eyebrow">Cantinho do Petisco</span>
-          <h1>Painel administrativo</h1>
-          <p>Gerencie o cardápio por setores, fotos, disponibilidade e o prato de cada dia da semana.</p>
-          <div class="admin-user-line">Conectado como <strong id="adminIdentity"></strong></div>
-        </div>
-        <div class="admin-header-actions admin-header-actions-clean">
+      <header class="admin-header admin-header-v5 admin-header-clean admin-header-left-menu">
+        <div class="admin-header-main">
           <button id="adminToolsMenuBtn" class="admin-menu-toggle" type="button" aria-label="Abrir menu" aria-controls="adminToolsMenu" aria-expanded="false" title="Menu">
             <span class="hamburger-lines" aria-hidden="true"><i></i><i></i><i></i></span>
           </button>
+          <div class="admin-title-block">
+            <span class="eyebrow">Cantinho do Petisco</span>
+            <h1>Painel administrativo</h1>
+            <p>Gerencie o cardápio por setores, fotos, disponibilidade e o prato de cada dia da semana.</p>
+            <div class="admin-user-line">Conectado como <strong id="adminIdentity"></strong></div>
+          </div>
+        </div>
+        <div class="admin-header-actions admin-header-actions-clean">
           <button id="logoutBtn" class="secondary-button small" type="button">Sair</button>
         </div>
       </header>
@@ -210,8 +214,22 @@
           </div>
         </section>
 
+        <section class="form-section-card product-special-section">
+          <div class="form-section-title"><span>5</span><div><strong>Prato do dia</strong><small>Você pode programar este produto sem sair da tela de edição.</small></div></div>
+          <label class="switch-line switch-card product-special-toggle"><input id="productDailySpecial" type="checkbox"><span><strong>Tornar prato do dia</strong><small>Ative e escolha em qual dia da semana este prato será destacado.</small></span></label>
+          <div id="productSpecialFields" class="form-grid product-special-fields hidden">
+            <label class="field-label">Dia da semana <span>*</span>
+              <select id="productSpecialWeekday">
+                <option value="">Selecione...</option>
+                <option value="1">Segunda-feira</option><option value="2">Terça-feira</option><option value="3">Quarta-feira</option><option value="4">Quinta-feira</option><option value="5">Sexta-feira</option><option value="6">Sábado</option><option value="0">Domingo</option>
+              </select>
+            </label>
+            <div class="product-special-info"><strong>Como funciona</strong><small>Se esse dia já tiver outro prato do dia, este produto assume o lugar ao salvar. Ao desmarcar, a programação deste produto é removida.</small></div>
+          </div>
+        </section>
+
         <section class="form-section-card options-admin-section">
-          <div class="form-section-title"><span>5</span><div><strong>Personalização do produto</strong><small>Observação, sabores e adicionais que aparecem ao cliente.</small></div></div>
+          <div class="form-section-title"><span>6</span><div><strong>Personalização do produto</strong><small>Observação, sabores e adicionais que aparecem ao cliente.</small></div></div>
           <label class="switch-line switch-card notes-switch-card"><input id="productAllowNotes" type="checkbox" checked><span><strong>Permitir observação do cliente</strong><small>No cardápio aparece um texto neutro: “Retirar ou acrescentar algo? Escreva aqui (opcional).”</small></span></label>
           <div class="option-editor-toolbar">
             <div><strong>Grupos de escolha</strong><small>Ex.: Sabores, Adicionais, Escolha sua bebida.</small></div>
@@ -236,7 +254,7 @@
   <script src="js/config.js"></script>
   <script src="js/mock-data.js"></script>
   <script src="js/supabase-rest.js"></script>
-  <script src="js/admin.js?v=15"></script>
-  <script src="js/pwa-admin.js?v=15"></script>
+  <script src="js/admin.js?v=16"></script>
+  <script src="js/pwa-admin.js?v=16"></script>
 </body>
 </html>

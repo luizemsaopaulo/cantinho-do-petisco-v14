@@ -260,12 +260,46 @@
     $('#specialId').value=s.id;$('#specialWeekday').value=String(s.weekday);$('#specialProduct').value=s.product_id;$('#specialPrice').value=s.special_price??'';$('#specialNote').value=s.note||'';$('#specialActive').checked=s.active!==false;$('#cancelSpecialEdit').classList.remove('hidden');
     $('#specialWeekday').scrollIntoView({behavior:'smooth',block:'center'});
   }
+  function specialsForProduct(productId){
+    return state.specials.filter(s=>s.product_id===productId);
+  }
+  function syncProductSpecialFields(){
+    const enabled=$('#productDailySpecial').checked;
+    $('#productSpecialFields').classList.toggle('hidden',!enabled);
+    $('#productSpecialWeekday').required=enabled;
+  }
+  function loadProductSpecialState(productId){
+    const existing=productId?specialsForProduct(productId):[];
+    const first=existing[0]||null;
+    $('#productDailySpecial').checked=!!first;
+    $('#productSpecialWeekday').value=first?String(first.weekday):'';
+    syncProductSpecialFields();
+  }
+  async function saveProductSpecial(productId){
+    const enabled=$('#productDailySpecial').checked;
+    const current=specialsForProduct(productId);
+    if(!enabled){
+      for(const s of current) await api.deleteSpecial(s.id);
+      return;
+    }
+    const weekdayRaw=$('#productSpecialWeekday').value;
+    if(weekdayRaw==='')throw new Error('Escolha o dia da semana do prato do dia.');
+    const weekday=Number(weekdayRaw);
+    const slot=state.specials.find(s=>Number(s.weekday)===weekday)||null;
+    const previous=current[0]||null;
+    await api.saveSpecial({id:slot?.id||null,weekday,product_id:productId,special_price:previous?.special_price??null,note:previous?.note??null,active:true});
+    for(const s of current){
+      if(s.id!==slot?.id && Number(s.weekday)!==weekday) await api.deleteSpecial(s.id);
+    }
+  }
+
   function openProduct(id=null){
     state.editing=id?product(id):null;state.imageRemoved=false; const p=state.editing;
     state.editingOptionGroups=p?cloneProductOptionModel(p.id):[];
     $('#productDialogTitle').textContent=p?'Editar produto':'Novo produto';$('#productId').value=p?.id||'';$('#productName').value=p?.name||'';$('#productCategory').value=p?.category_id||state.categories[0]?.id||'';
     $('#productSize').value=p?.size||'';$('#productPrice').value=p?.price??'';$('#productOrder').value=p?.sort_order??0;$('#productDescription').value=p?.description||'';
     $('#productAvailable').checked=p?.available??true;$('#productActive').checked=p?.active??true;$('#productFeatured').checked=p?.featured??false;$('#productAllowNotes').checked=p?.allow_notes!==false;$('#productImage').value='';
+    loadProductSpecialState(p?.id||null);
     const box=$('#imagePreviewBox'),preview=$('#imagePreview'); if(p?.image_path){preview.src=imgUrl(p.image_path);box.classList.remove('hidden');}else{preview.removeAttribute('src');box.classList.add('hidden');}
     renderOptionEditor();$('#deleteProductBtn').classList.toggle('hidden',!p); els.productDialog.showModal();
   }
@@ -278,7 +312,7 @@
     readOptionEditor();
     let image_path=state.editing?.image_path||null;if(state.imageRemoved)image_path=null;const file=$('#productImage').files?.[0];if(file){$('#saveProductBtn').textContent='Enviando foto…';image_path=await api.uploadProductImage(file);}
     const row={id,category_id,name,slug:uniqueSlug(name,size,category_id,id),size,description:$('#productDescription').value.trim()||null,price:Number(priceRaw),image_path,allow_notes:$('#productAllowNotes').checked,notes_max_length:state.editing?.notes_max_length??null,active:$('#productActive').checked,available:$('#productAvailable').checked,featured:$('#productFeatured').checked,sort_order:Math.max(0,Number($('#productOrder').value)||0)};
-    const saved=await api.saveProduct(row);if(!saved?.id)throw new Error('O produto não retornou um ID após salvar.');$('#saveProductBtn').textContent='Salvando opções…';await saveOptionEditor(saved.id);await reloadData();els.productDialog.close();toast('Produto e opções salvos com sucesso.','success');
+    const saved=await api.saveProduct(row);if(!saved?.id)throw new Error('O produto não retornou um ID após salvar.');$('#saveProductBtn').textContent='Salvando opções…';await saveOptionEditor(saved.id);$('#saveProductBtn').textContent='Salvando prato do dia…';await saveProductSpecial(saved.id);await reloadData();els.productDialog.close();toast('Produto, opções e prato do dia salvos com sucesso.','success');
   }
   async function deleteProduct(id){
     const p=product(id);if(!p)return;if(!confirm(`Excluir “${p.name}”? Esta ação não pode ser desfeita.`))return;
@@ -297,13 +331,14 @@
     $('#productsTab').classList.toggle('hidden',name!=='products');$('#specialTab').classList.toggle('hidden',name!=='special');
   }
   function initEvents(){
-    els.loginForm.addEventListener('submit',async e=>{e.preventDefault();els.loginBtn.disabled=true;els.loginBtn.textContent='Entrando…';els.loginMessage.classList.add('hidden');try{const s=await api.login($('#adminEmail').value.trim(),$('#adminPassword').value);if(!(await api.isAdmin()))throw new Error('Usuário autenticado, mas sem permissão de administrador.');await enterAdmin(s);}catch(err){api.logout();showLogin(err.message||'Falha no login.');}finally{els.loginBtn.disabled=false;els.loginBtn.textContent='Entrar';}});
+    els.loginForm.addEventListener('submit',async e=>{e.preventDefault();els.loginBtn.disabled=true;els.loginBtn.textContent='Entrando…';els.loginMessage.classList.add('hidden');const persistent=$('#keepAdminSignedIn')?.checked!==false;api.setPersistentSession?.(persistent);try{const s=await api.login($('#adminEmail').value.trim(),$('#adminPassword').value);if(!(await api.isAdmin()))throw new Error('Usuário autenticado, mas sem permissão de administrador.');await enterAdmin(s);}catch(err){api.logout();if(persistent)api.setPersistentSession?.(true);showLogin(err.message||'Falha no login.');}finally{els.loginBtn.disabled=false;els.loginBtn.textContent='Entrar';}});
     $('#logoutBtn').onclick=()=>{api.logout();location.reload();};
     document.querySelectorAll('.admin-tab').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
     els.search.addEventListener('input',()=>{els.clearSearch.classList.toggle('hidden',!els.search.value);renderProducts();});els.clearSearch.onclick=()=>{els.search.value='';els.clearSearch.classList.add('hidden');renderProducts();els.search.focus();};els.filter.onchange=renderProducts;
     $('#expandAllCategories').onclick=()=>{state.collapsedCategories.clear();renderProducts();};
     $('#collapseAllCategories').onclick=()=>{state.categories.forEach(c=>state.collapsedCategories.add(c.id));renderProducts();};
     $('#newProductBtn').onclick=()=>openProduct();
+    $('#productDailySpecial').addEventListener('change',syncProductSpecialFields);
     $('#addOptionGroupBtn').onclick=()=>{readOptionEditor();state.editingOptionGroups.push({id:null,code:null,name:'',selection_type:'single',required:false,min_selections:null,max_selections:1,sort_order:state.editingOptionGroups.length+1,active:true,options:[]});renderOptionEditor();};
     els.productForm.addEventListener('submit',async e=>{e.preventDefault();const btn=$('#saveProductBtn');btn.disabled=true;const old=btn.textContent;try{await saveProduct();}catch(err){toast(err.message||'Não foi possível salvar.','error');}finally{btn.disabled=false;btn.textContent=old;}});
     $('#closeProductDialog').onclick=()=>els.productDialog.close();

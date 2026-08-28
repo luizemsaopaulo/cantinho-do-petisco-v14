@@ -4,21 +4,46 @@
   class SupabaseRest {
     constructor() {
       this.sessionKey = 'cantinho_petisco_admin_session';
+      this.persistenceKey = 'cantinho_petisco_admin_persistent';
       this.memorySession = null;
+    }
+
+    setPersistentSession(enabled) {
+      try {
+        if (enabled) localStorage.setItem(this.persistenceKey, '1');
+        else localStorage.removeItem(this.persistenceKey);
+      } catch {}
+    }
+
+    isPersistentSession() {
+      try { return localStorage.getItem(this.persistenceKey) === '1'; } catch { return false; }
     }
 
     storeSession(session) {
       this.memorySession = session || null;
       try {
-        if (session) sessionStorage.setItem(this.sessionKey, JSON.stringify(session));
-        else sessionStorage.removeItem(this.sessionKey);
+        if (!session) {
+          sessionStorage.removeItem(this.sessionKey);
+          localStorage.removeItem(this.sessionKey);
+          return;
+        }
+        const raw = JSON.stringify(session);
+        if (this.isPersistentSession()) {
+          localStorage.setItem(this.sessionKey, raw);
+          sessionStorage.removeItem(this.sessionKey);
+        } else {
+          sessionStorage.setItem(this.sessionKey, raw);
+          localStorage.removeItem(this.sessionKey);
+        }
       } catch {}
     }
 
     readStoredSession() {
       try {
-        const raw = sessionStorage.getItem(this.sessionKey);
-        if (raw) return JSON.parse(raw);
+        const localRaw = localStorage.getItem(this.sessionKey);
+        if (localRaw) return JSON.parse(localRaw);
+        const sessionRaw = sessionStorage.getItem(this.sessionKey);
+        if (sessionRaw) return JSON.parse(sessionRaw);
       } catch {}
       return this.memorySession;
     }
@@ -121,6 +146,7 @@
 
     logout() {
       this.storeSession(null);
+      this.setPersistentSession(false);
     }
 
     async isAdmin() {
