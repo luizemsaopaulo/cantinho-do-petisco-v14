@@ -1,0 +1,55 @@
+CANTINHO DO PETISCO — DEPURAÇÃO CHROMIUM V20
+
+RESULTADO: 41/41 verificações PASS.
+
+PASS — Mobile: modal abre
+PASS — Mobile: botão Adicionar está clicável mesmo faltando obrigatório
+PASS — Mobile: botão não parece quebrado/inativo
+PASS — Mobile: dois grupos obrigatórios no produto de teste
+PASS — Mobile: fundo bloqueado enquanto modal aberto
+PASS — Mobile: modal permanece aberto ao faltar obrigatório
+PASS — Mobile: aviso geral aparece
+PASS — Mobile: aviso explica que faltam opções
+PASS — Mobile: grupos faltantes são destacados
+PASS — Mobile: mensagem individual aparece no primeiro grupo
+PASS — Mobile: aria-invalid aplicado ao grupo faltante
+PASS — Mobile: aria-invalid aplicado ao botão
+PASS — Mobile: tentativa de vibração do aparelho executada
+PASS — Mobile: toast de erro aparece
+PASS — Mobile: botão recebe animação de alerta
+PASS — Mobile: após escolher preparo, ainda há alerta porque falta Adicionais
+PASS — Mobile: só um grupo permanece destacado
+PASS — Mobile: grupo restante é Adicionais
+PASS — Mobile: opção Nenhum existe em Adicionais
+PASS — Mobile: alerta some após completar obrigatórios
+PASS — Mobile: nenhum grupo continua em vermelho
+PASS — Mobile: botão muda para Adicionar com preço
+PASS — Mobile: aria-invalid do botão volta a false
+PASS — Mobile: modal fecha após pedido válido
+PASS — Mobile: item entra no carrinho
+PASS — Mobile: toast de sucesso aparece
+PASS — Desktop: botão clicável com obrigatórios pendentes
+PASS — Desktop: feedback de obrigatório aparece
+PASS — Desktop: modal não fecha por clique inválido
+PASS — Desktop: não duplica banner de erro
+PASS — Desktop: vibração/feedback é disparável repetidamente
+PASS — Código: submit só fecha modal se addSelected retornar sucesso
+PASS — Código: botão não é desabilitado apenas por needsChoice
+PASS — Código: suporte a navigator.vibrate
+PASS — Código: scroll automático para primeiro faltante
+PASS — Código: aviso usa role=alert
+PASS — Código: respeita prefers-reduced-motion
+PASS — PWA: cache atualizado para v20
+PASS — PWA: QR delivery v20 existe
+PASS — PWA: QR restaurante v20 existe
+PASS — JavaScript: sem erros de console/pageerror no Chromium
+
+ALTERAÇÃO TESTADA:
+- Ao tentar adicionar sem preencher opções obrigatórias, o modal permanece aberto.
+- O botão continua clicável para que o sistema possa explicar o problema.
+- Há aviso visual, destaque do campo, rolagem automática, foco e vibração quando suportada.
+- Após preencher todas as escolhas, o alerta some e o item pode ser adicionado normalmente.
+
+OBSERVAÇÃO SOBRE VIBRAÇÃO:
+- navigator.vibrate não é suportado em todos os aparelhos/navegadores (especialmente iPhone/Safari).
+- Quando não houver suporte, o feedback visual, a mensagem e a rolagem continuam funcionando normalmente.

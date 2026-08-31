@@ -1,0 +1,14 @@
+CANTINHO DO PETISCO — ALTERAÇÕES V20
+
+1. O botão Adicionar ao carrinho não fica mais inerte quando falta uma opção obrigatória.
+2. Ao tentar adicionar sem preencher o obrigatório:
+   - botão vibra visualmente;
+   - celular vibra quando navigator.vibrate é suportado;
+   - aparece aviso claro;
+   - a tela rola até a primeira opção faltante;
+   - o grupo faltante recebe destaque vermelho e mensagem de erro.
+3. O modal NÃO fecha enquanto faltar opção obrigatória.
+4. Ao completar as escolhas, o aviso/destaque é removido.
+5. Acessibilidade: role=alert, aria-invalid e respeito a prefers-reduced-motion.
+6. Cache/PWA atualizado para v20.
+7. Nenhuma mudança de banco é necessária em relação à V19.
