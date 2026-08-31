@@ -1,27 +1,32 @@
-CANTINHO DO PETISCO — V20
+CANTINHO DO PETISCO — V21
 
-NOVIDADE DE EXPERIÊNCIA DO CLIENTE
-Quando o cliente toca em “Adicionar ao carrinho” sem preencher uma opção obrigatória, o botão não fica mais parecendo quebrado. O sistema agora:
-- mantém o produto aberto;
-- mostra uma mensagem clara;
-- destaca em vermelho exatamente o que falta;
-- rola automaticamente até a primeira escolha faltante;
-- tenta vibrar o celular quando o navegador oferece suporte;
-- remove os avisos assim que todas as escolhas obrigatórias forem preenchidas.
+NOVIDADE PRINCIPAL
+Nenhum tamanho de marmita vem pré-selecionado ao abrir o produto. O cliente precisa escolher explicitamente P, M ou G antes de adicionar ao carrinho.
+
+SE O CLIENTE TENTAR ADICIONAR SEM TAMANHO
+- o produto continua aberto;
+- aparece “Falta escolher o tamanho da marmita”;
+- a área de tamanhos fica destacada;
+- a tela rola até os tamanhos;
+- o celular tenta vibrar quando suportado;
+- nada é adicionado ao carrinho.
+
+DEPOIS DE ESCOLHER O TAMANHO
+As opções e adicionais específicos daquele tamanho são carregados normalmente. A validação de opções obrigatórias da V20 continua funcionando.
 
 PRATO DO DIA / MARMITAS
-A lógica da V19 foi preservada: vários pratos no mesmo dia, seletor somente de Marmitas, agrupamento de tamanhos e confirmação antes de adicionar/substituir pratos do dia.
+A lógica anterior foi preservada: vários pratos no mesmo dia, seletor somente de Marmitas, agrupamento de tamanhos e confirmação antes de adicionar/substituir pratos do dia.
 
 SUPABASE
-A V20 não cria nova estrutura de banco. Se a migração da V19 já foi executada, não rode SQL novamente. Para instalações que ainda não fizeram a migração, use EXECUTAR_NO_SUPABASE_V20.sql.
+A V21 não cria nova estrutura de banco. Se a migração da V19/V20 já foi executada, não rode SQL novamente.
 
 REPOSITÓRIO PUBLICADO
 cantinho-do-petisco-v14
 
 LINKS
-Delivery: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/?v=20
-Restaurante: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/restaurante.html?v=20
-Admin: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/admin.html?v=20
+Delivery: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/?v=21
+Restaurante: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/restaurante.html?v=21
+Admin: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/admin.html?v=21
 
 DEPURAÇÃO
-Ver DEPURACAO_CHROMIUM_V20.txt.
+Ver DEPURACAO_CHROMIUM_V21.txt.

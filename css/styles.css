@@ -434,7 +434,7 @@ body.admin-tools-open{overflow:hidden}
 @media (max-width:720px){.weekday-check-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.weekday-special-item{grid-template-columns:1fr auto}.weekday-status{display:none}.weekday-actions{grid-column:1/-1;justify-content:flex-end}.weekday-group-head{align-items:flex-start}.special-conflict-actions{display:grid;grid-template-columns:1fr}.special-conflict-actions button{width:100%}.special-picker-dialog{max-height:88vh}.special-picker-list{max-height:58vh}}
 
 
-/* V20 — feedback claro para opções obrigatórias */
+/* V21 — feedback claro para opções obrigatórias */
 .required-options-alert{display:flex;align-items:flex-start;gap:11px;margin:0 0 12px;padding:13px 14px;border:1px solid #e5a9ad;border-radius:14px;background:#fff1f2;color:#76202a;box-shadow:0 7px 20px rgba(127,36,36,.08)}
 .required-options-alert-icon{font-size:1.25rem;line-height:1.2}.required-options-alert strong,.required-options-alert span{display:block}.required-options-alert strong{font-size:.88rem}.required-options-alert div>span{margin-top:3px;font-size:.76rem;line-height:1.35;color:#8a3a42}
 .item-option-group.required-missing{border:2px solid #d3323d;background:#fff6f6;box-shadow:0 0 0 4px rgba(211,50,61,.08)}
@@ -445,3 +445,10 @@ body.admin-tools-open{overflow:hidden}
 @keyframes requiredActionShake{0%,100%{transform:translateX(0)}16%{transform:translateX(-7px)}32%{transform:translateX(7px)}48%{transform:translateX(-5px)}64%{transform:translateX(5px)}80%{transform:translateX(-2px)}}
 #addItemBtn[aria-invalid="true"]{box-shadow:0 8px 18px rgba(178,13,24,.16),0 0 0 2px rgba(178,13,24,.08)}
 @media (prefers-reduced-motion:reduce){.required-missing-pulse,.required-action-shake{animation:none!important}}
+
+
+/* V21 — tamanho nunca vem pré-selecionado */
+.size-picker-wrap.required-size-missing{border:2px solid #d3323d;background:#fff6f6;box-shadow:0 0 0 4px rgba(211,50,61,.08)}
+.size-required-message{margin:10px 2px 0;color:#b4232d;font-size:.78rem;font-weight:850}
+.required-size-pulse{animation:requiredGroupPulse .62s ease}
+@media (prefers-reduced-motion:reduce){.required-size-pulse{animation:none!important}}

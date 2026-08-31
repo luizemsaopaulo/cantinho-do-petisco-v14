@@ -2,8 +2,8 @@
   'use strict';
 
   const BASE = 'https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/';
-  const DELIVERY_URL = BASE + '?v=20';
-  const RESTAURANT_URL = BASE + 'restaurante.html?v=20';
+  const DELIVERY_URL = BASE + '?v=21';
+  const RESTAURANT_URL = BASE + 'restaurante.html?v=21';
   let deferredPrompt = null;
   let lastMenuFocus = null;
 
@@ -56,7 +56,7 @@
   function qr(mode){
     const delivery = mode === 'delivery';
     $('qrDialogTitle').textContent = delivery ? 'QR Code — Delivery' : 'QR Code — Restaurante';
-    $('qrDialogImage').src = delivery ? 'assets/qr-delivery-v20.png' : 'assets/qr-restaurante-v20.png';
+    $('qrDialogImage').src = delivery ? 'assets/qr-delivery-v21.png' : 'assets/qr-restaurante-v21.png';
     $('qrDialogLink').textContent = delivery ? DELIVERY_URL : RESTAURANT_URL;
     closeMenu(false);
     const dialog = $('qrDialog');
@@ -117,7 +117,7 @@
   }
 
   if('serviceWorker' in navigator){
-    addEventListener('load', ()=>navigator.serviceWorker.register('service-worker.js?v=20',{scope:'./'}).catch(()=>{}));
+    addEventListener('load', ()=>navigator.serviceWorker.register('service-worker.js?v=21',{scope:'./'}).catch(()=>{}));
   }
 
   addEventListener('beforeinstallprompt', event=>{

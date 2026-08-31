@@ -1,0 +1,10 @@
+CANTINHO DO PETISCO — ALTERAÇÕES V21
+
+1. Nenhum tamanho de marmita é pré-selecionado ao abrir o produto.
+2. O cliente precisa tocar explicitamente em P, M ou G antes de adicionar ao carrinho.
+3. Sem tamanho escolhido, o preço mostra “Selecione o tamanho”.
+4. Ao tentar adicionar sem tamanho, aparece aviso claro, vibração quando suportada, destaque vermelho e rolagem automática até os tamanhos.
+5. Depois de escolher o tamanho, as opções específicas daquele tamanho são carregadas normalmente.
+6. A validação de opções obrigatórias da V20 foi preservada.
+7. Cache/PWA e QR Codes atualizados para v21.
+8. Não há nova alteração estrutural de banco nesta versão.

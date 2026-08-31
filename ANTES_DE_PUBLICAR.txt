@@ -1,31 +1,22 @@
-CANTINHO DO PETISCO — V20 — ANTES DE PUBLICAR
+CANTINHO DO PETISCO — V21 — ANTES DE PUBLICAR
 
-1) BANCO DE DADOS
-   Se você JÁ executou a migração da V19 no Supabase, a V20 NÃO exige novo SQL.
-   Se ainda NÃO executou, rode:
-   EXECUTAR_NO_SUPABASE_V20.sql
+1) A V21 NÃO exige novo SQL se a migração da V19/V20 já foi aplicada.
 
-2) Publique TODOS os arquivos da V20 no repositório:
+2) Publique TODOS os arquivos da V21 no repositório:
    cantinho-do-petisco-v14
 
 3) Aguarde o GitHub Pages atualizar.
 
-4) Teste:
-   Delivery: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/?v=20
-   Restaurante: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/restaurante.html?v=20
-   Admin: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/admin.html?v=20
+4) Links de teste:
+   Delivery: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/?v=21
+   Restaurante: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/restaurante.html?v=21
+   Admin: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/admin.html?v=21
 
-5) TESTE NOVO DA V20
-   Abra uma marmita que tenha escolhas obrigatórias (por exemplo, Frango com creme de milho).
-   Sem escolher nada, toque em Adicionar ao carrinho.
-   O sistema deve:
-   - manter o produto aberto;
-   - mostrar aviso de escolha obrigatória;
-   - destacar os campos faltantes;
-   - rolar até a primeira escolha faltante;
-   - vibrar no celular se o navegador/aparelho suportar.
-
-6) Depois selecione todas as escolhas obrigatórias e confirme que o item entra normalmente no carrinho.
-
-OBSERVAÇÃO
-A vibração física depende do suporte do navegador. Mesmo sem vibração, o aviso visual, destaque e rolagem funcionam.
+5) TESTE NOVO DA V21
+   - Abra uma marmita com mais de um tamanho.
+   - Confirme que nenhum tamanho está selecionado.
+   - Toque em “Adicionar ao carrinho” sem escolher tamanho.
+   - Deve aparecer aviso, destaque, rolagem e vibração quando suportada.
+   - Selecione P/M/G.
+   - Preencha as demais opções obrigatórias.
+   - Confirme que só então o item entra no carrinho.

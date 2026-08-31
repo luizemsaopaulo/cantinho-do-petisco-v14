@@ -1,0 +1,59 @@
+CANTINHO DO PETISCO — DEPURAÇÃO CHROMIUM V21
+
+RESULTADO: 48/48 PASS
+
+PASS — DESKTOP: modal abriu
+PASS — DESKTOP: existem tamanhos para escolher
+PASS — DESKTOP: nenhum tamanho vem pré-selecionado
+PASS — DESKTOP: nenhum botão tem classe selected
+PASS — DESKTOP: selo informa Obrigatório
+PASS — DESKTOP: preço pede seleção
+PASS — DESKTOP: opções não aparecem antes do tamanho
+PASS — DESKTOP: carrinho começa vazio
+PASS — DESKTOP: tentativa sem tamanho não adiciona
+PASS — DESKTOP: tamanho recebe destaque de erro
+PASS — DESKTOP: mensagem de tamanho aparece
+PASS — DESKTOP: aviso textual explica o erro
+PASS — DESKTOP: vibração é solicitada
+PASS — DESKTOP: exatamente um tamanho fica selecionado
+PASS — DESKTOP: destaque de tamanho some após escolher
+PASS — DESKTOP: preço passa a ser exibido
+PASS — DESKTOP: adicionais do tamanho aparecem
+PASS — DESKTOP: opção obrigatória ainda impede adicionar
+PASS — DESKTOP: grupo obrigatório fica destacado
+PASS — DESKTOP: item entra após tamanho + obrigatório
+PASS — DESKTOP: modal fecha após adicionar
+PASS — DESKTOP: reabrir não reaproveita tamanho anterior
+PASS — DESKTOP: reabrir volta a exigir tamanho
+PASS — DESKTOP: sem erros JS
+PASS — MOBILE: modal abriu
+PASS — MOBILE: existem tamanhos para escolher
+PASS — MOBILE: nenhum tamanho vem pré-selecionado
+PASS — MOBILE: nenhum botão tem classe selected
+PASS — MOBILE: selo informa Obrigatório
+PASS — MOBILE: preço pede seleção
+PASS — MOBILE: opções não aparecem antes do tamanho
+PASS — MOBILE: carrinho começa vazio
+PASS — MOBILE: tentativa sem tamanho não adiciona
+PASS — MOBILE: tamanho recebe destaque de erro
+PASS — MOBILE: mensagem de tamanho aparece
+PASS — MOBILE: aviso textual explica o erro
+PASS — MOBILE: vibração é solicitada
+PASS — MOBILE: exatamente um tamanho fica selecionado
+PASS — MOBILE: destaque de tamanho some após escolher
+PASS — MOBILE: preço passa a ser exibido
+PASS — MOBILE: adicionais do tamanho aparecem
+PASS — MOBILE: opção obrigatória ainda impede adicionar
+PASS — MOBILE: grupo obrigatório fica destacado
+PASS — MOBILE: item entra após tamanho + obrigatório
+PASS — MOBILE: modal fecha após adicionar
+PASS — MOBILE: reabrir não reaproveita tamanho anterior
+PASS — MOBILE: reabrir volta a exigir tamanho
+PASS — MOBILE: sem erros JS
+
+FOCO DA V21:
+- Nenhum tamanho é pré-selecionado ao abrir marmita.
+- Tamanho passa a ser uma escolha obrigatória explícita.
+- Clicar em Adicionar sem tamanho gera aviso, destaque, rolagem e vibração quando suportada.
+- Opções específicas só aparecem depois que o tamanho é escolhido.
+- Validação de opções obrigatórias da V20 permanece ativa.
