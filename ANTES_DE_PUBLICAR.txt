@@ -1,19 +1,19 @@
-CANTINHO DO PETISCO — V18 — ANTES DE PUBLICAR
+CANTINHO DO PETISCO — V19 — ANTES DE PUBLICAR
 
 1) PRIMEIRO: abra o Supabase > SQL Editor e execute:
-   supabase/MIGRACAO_V18_PRATO_DO_DIA_MARMITAS.sql
+   supabase/MIGRACAO_V19_PRATO_DO_DIA_MARMITAS.sql
 
 2) Confirme que o SQL terminou sem erro.
 
-3) Publique TODOS os arquivos da V18 no repositório:
+3) Publique TODOS os arquivos da V19 no repositório:
    cantinho-do-petisco-v14
 
 4) Aguarde o GitHub Pages atualizar.
 
 5) Teste:
-   Delivery: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/?v=18
-   Restaurante: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/restaurante.html?v=18
-   Admin: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/admin.html?v=18
+   Delivery: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/?v=19
+   Restaurante: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/restaurante.html?v=19
+   Admin: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/admin.html?v=19
 
 6) No Admin > Prato do dia, confirme que:
    - só aparecem Marmitas;

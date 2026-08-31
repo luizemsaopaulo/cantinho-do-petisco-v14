@@ -1,0 +1,10 @@
+CANTINHO DO PETISCO — ALTERAÇÕES V19
+
+1. Seletor de Prato do Dia agora exige confirmação em duas etapas.
+2. Tocar/clicar numa marmita não seleciona imediatamente.
+3. Antes da seleção, o ADM mostra o prato escolhido e pede confirmação.
+4. Se o dia já possui pratos, a confirmação mostra a lista atual e oferece: adicionar também, substituir atuais ou cancelar.
+5. Cancelar volta para a lista sem alterar o prato selecionado.
+6. Substituição só acontece ao salvar o formulário, nunca no clique da lista.
+7. Se o dia for alterado depois da escolha, a decisão pendente é descartada para evitar ação errada.
+8. Cache/PWA atualizado para v19.

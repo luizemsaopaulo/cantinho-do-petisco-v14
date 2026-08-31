@@ -1,3 +1,4 @@
+-- V19 usa a mesma migração estrutural/dados introduzida na V18.
 -- ============================================================
 -- CANTINHO DO PETISCO — V19
 -- PRATO DO DIA COM VÁRIAS MARMITAS + ADICIONAIS PADRÃO

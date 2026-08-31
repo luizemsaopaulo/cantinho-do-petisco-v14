@@ -1,4 +1,4 @@
-CANTINHO DO PETISCO — V18
+CANTINHO DO PETISCO — V19
 
 PRINCIPAIS MUDANÇAS
 - Prato do dia aceita mais de uma marmita no mesmo dia.
@@ -9,7 +9,7 @@ PRINCIPAIS MUDANÇAS
 - No editor da Marmita é possível marcar vários dias da semana.
 - Produtos de outras categorias não podem virar Prato do dia.
 
-DADOS INCLUÍDOS NA MIGRAÇÃO V18
+DADOS INCLUÍDOS NA MIGRAÇÃO V19
 - Arroz carreteiro M — R$ 24,99.
 - Arroz carreteiro G — R$ 29,99.
 - Todas as marmitas (exceto Feijoada): Nenhum, Ovo 3, Frango empanado 10, Contra-filé empanado 15, Porção arroz 10, Porção feijão 10, Salada pequena 3.
@@ -17,21 +17,21 @@ DADOS INCLUÍDOS NA MIGRAÇÃO V18
 - Frango com creme de milho: escolha obrigatória Empanado/Grelhado.
 
 IMPORTANTE — SUPABASE
-Antes de usar a V18 em produção, execute no SQL Editor:
-  supabase/MIGRACAO_V18_PRATO_DO_DIA_MARMITAS.sql
+Antes de usar a V19 em produção, execute no SQL Editor:
+  supabase/MIGRACAO_V19_PRATO_DO_DIA_MARMITAS.sql
 
 Essa migração é necessária para permitir mais de um Prato do dia no mesmo dia da semana.
 
 STROGONOFF
-O preço da opção Carne ainda não foi informado. A V18 NÃO inventa esse preço. O sistema de opções do ADM está pronto para configurar Frango/Carne assim que os valores corretos forem definidos.
+O preço da opção Carne ainda não foi informado. A V19 NÃO inventa esse preço. O sistema de opções do ADM está pronto para configurar Frango/Carne assim que os valores corretos forem definidos.
 
 REPOSITÓRIO PUBLICADO
 cantinho-do-petisco-v14
 
 LINKS
-Delivery: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/?v=18
-Restaurante: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/restaurante.html?v=18
-Admin: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/admin.html?v=18
+Delivery: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/?v=19
+Restaurante: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/restaurante.html?v=19
+Admin: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/admin.html?v=19
 
 DEPURAÇÃO
-Ver DEPURACAO_CHROMIUM_V18.txt.
+Ver DEPURACAO_CHROMIUM_V19.txt.

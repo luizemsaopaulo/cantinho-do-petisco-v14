@@ -1,0 +1,168 @@
+CANTINHO DO PETISCO — DEPURAÇÃO CHROMIUM V19
+
+RESULTADO: 49/49 PASS
+
+PASS — ADM entra em modo demonstração
+PASS — Seletor de prato do dia contém marmitas — 24 famílias
+PASS — Seletor não mostra preços
+PASS — Seletor não mostra tamanho P/M/G como item
+PASS — Seletor exclui categorias não Marmitas
+PASS — Busca do seletor encontra Feijoada uma única vez
+PASS — Clique na lista NÃO escolhe imediatamente
+PASS — Confirmação mostra a marmita escolhida
+PASS — Confirmação já mostra pratos existentes do dia — 🍱 Filé de frango c/ creme de milho
+🍱 Arroz carreteiro
+PASS — Confirmação oferece adicionar ou substituir
+PASS — Cancelar volta à lista sem alterar seleção
+PASS — Só após confirmar a marmita é selecionada
+PASS — Marmita selecionada sem mostrar preço
+PASS — Decisão de adicionar tomada na confirmação evita segundo modal
+PASS — Adicionar também mantém múltiplos pratos no dia — ['Seg', 'Segunda-feira', '3 pratos', '+ Adicionar prato', 'Arroz carreteiro']
+PASS — Substituir aparece antes de confirmar seleção
+PASS — Substituição confirmada não abre conflito novamente
+PASS — Substituir atuais deixa somente o novo prato — Seg
+Segunda-feira
+1 prato
++ Adicionar prato
+Nhoque recheado
+Preço e tamanho são escolhidos no produto
+Ativo
+Editar
+Excluir
+PASS — Prato do dia fica indisponível fora de Marmitas
+PASS — Prato do dia disponível para Marmitas
+PASS — Editor do produto aceita vários dias da semana — ['3', '6']
+PASS — Editor mostra pratos já cadastrados no dia escolhido — Segunda-feira
+Já cadastrado: Nhoque recheado
+Quarta-feira
+Nenhum outro prato cadastrado
+Sábado
+Nenhum outro prato cadastrado
+PASS — ADM sem erros JS críticos
+PASS — Cliente vê vários pratos do dia — 3 cards
+PASS — Prato do dia não exibe preço antes de abrir — ✦ Prato do dia · Segunda-feira
+Filé de frango c/ creme de milho
+
+Uma escolha especial da casa para hoje.
+
+Escolha o tamanho e as opções ao abrir o prato.
+Escolher este prato
+✦ Prato do dia · Segunda-feira
+Arroz carreteiro
+
+Uma escolha especial da casa para hoje.
+
+Escolha o tamanho e as opções ao abr
+PASS — Prato do dia não exibe tamanho antes de abrir — ✦ Prato do dia · Segunda-feira
+Filé de frango c/ creme de milho
+
+Uma escolha especial da casa para hoje.
+
+Escolha o tamanho e as opções ao abrir o prato.
+Escolher este prato
+✦ Prato do dia · Segunda-feira
+Arroz carreteiro
+
+Uma escolha especial da casa para hoje.
+
+Escolha o tamanho e as opções ao abr
+PASS — Frango creme de milho aparece no prato do dia demo
+PASS — Frango exige escolha Empanado/Grelhado
+PASS — Marmita tem adicionais comuns
+PASS — Cliente não adiciona sem responder opções obrigatórias
+PASS — Pedido aceita resposta obrigatória completa
+PASS — Arroz carreteiro criado com tamanhos M e G
+PASS — Arroz carreteiro não recebe extras exclusivos Feijoada
+PASS — Feijoada recebe Bisteca R$10 e Toscana R$10 — ×
+🍱
+MARMITAS
+Feijoada
+
+R$ 24,99
+Disponível
+Escolha o tamanho
+O preço muda conforme o tamanho selecionado.
+Tamanho M
+M
+Média
+R$ 24,99
+✓
+G
+Grande
+R$ 29,99
+Adicionais
+Obrigatório
+
+Escolha pelo menos 1 tipo de opção · obrigatório
+
+Nenhum
+Sem acréscimo
+✓
+Ovo
++ R$ 3,00 cada · quantidade livre
+−
+0
++
+Frango empanado
++ R$ 10,00 cada · quantidade livre
+−
+0
++
+Contra filé empanado
++ R$ 15,00 cada · quantidade livre
+−
+0
++
+Porção de arroz
++ R$ 10,00 cada · quantidade livre
+−
+0
++
+Porção de feijão
++ R$ 10,00 cada · quantidade livre
+−
+0
++
+Salada pequena
++ R$ 3,00 cada · quantidade livre
+−
+0
++
+Bisteca
++ R$ 10,00 cada · quantidade livre
+−
+0
++
+Toscana
++ R$ 10,00 cada · quantidade livre
+−
+0
++
+Observação do item
+(opcional)
+−
+1
++
+Escolha as opções obrigatórias
+PASS — Cliente sem erros JS críticos
+PASS — Layout mobile carrega pratos do dia
+PASS — Modal bloqueia rolagem/interação de fundo no mobile — overflow=hidden
+PASS — SQL remove unicidade por weekday
+PASS — SQL cria unicidade por dia+produto
+PASS — SQL inclui Arroz carreteiro M 24,99
+PASS — SQL inclui Arroz carreteiro G 29,99
+PASS — SQL adicionais comuns completos
+PASS — SQL extras exclusivos Feijoada
+PASS — SQL preparo creme milho obrigatório
+
+OBSERVAÇÃO DE DADOS:
+- O preço do Strogonoff de carne não foi informado; a V19 não inventa esse valor.
+- O sistema está preparado para configurar grupos obrigatórios no ADM assim que os valores forem definidos.
+
+
+TESTES ADICIONAIS — ADM MOBILE / CONFIRMAÇÃO
+PASS — Mobile: toque na marmita não altera seleção antes de confirmar
+PASS — Mobile: confirmação cabe na tela e botões aparecem
+PASS — Mobile: lista de fundo fica fechada durante confirmação
+PASS — Mobile: cancelar retorna à lista
+PASS — Mobile: sem erros JS críticos

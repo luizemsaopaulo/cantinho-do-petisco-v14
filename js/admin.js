@@ -12,7 +12,7 @@
     {value:6,label:'Sábado',short:'Sáb'},
     {value:0,label:'Domingo',short:'Dom'},
   ];
-  const state = { categories:[], products:[], specials:[], optionGroups:[], productOptions:[], editing:null, editingOptionGroups:[], imageRemoved:false, collapsedCategories:new Set(), categoryQueries:{}, categoriesInitialized:false };
+  const state = { categories:[], products:[], specials:[], optionGroups:[], productOptions:[], editing:null, editingOptionGroups:[], imageRemoved:false, collapsedCategories:new Set(), categoryQueries:{}, categoriesInitialized:false, pendingPickerDecision:null };
   const $ = s => document.querySelector(s);
   const els = {
     login:$('#loginView'), admin:$('#adminView'), loginForm:$('#loginForm'), loginMessage:$('#loginMessage'), loginBtn:$('#loginBtn'), identity:$('#adminIdentity'),
@@ -310,13 +310,29 @@
     const root=$('#specialPickerList'),empty=$('#specialPickerEmpty');if(!root)return;
     root.innerHTML=families.map(g=>{const rep=g.products[0];return `<button type="button" class="special-picker-row" data-pick-special="${escapeHtml(rep.id)}"><span class="special-picker-icon">🍱</span><span><strong>${escapeHtml(g.name)}</strong><small>Marmita${g.products.length>1?` · ${g.products.length} tamanhos disponíveis`:''}</small></span><b aria-hidden="true">›</b></button>`;}).join('');
     empty?.classList.toggle('hidden',families.length>0);
-    root.querySelectorAll('[data-pick-special]').forEach(b=>b.onclick=()=>{setSpecialPickerProduct(b.dataset.pickSpecial);$('#specialPickerDialog').close();});
+    root.querySelectorAll('[data-pick-special]').forEach(b=>b.onclick=()=>confirmSpecialPickerProduct(b.dataset.pickSpecial));
   }
   function openSpecialPicker(){
     $('#specialPickerSearch').value='';$('#clearSpecialPickerSearch').classList.add('hidden');renderSpecialPicker();$('#specialPickerDialog').showModal();setTimeout(()=>$('#specialPickerSearch').focus(),0);
   }
+  function confirmSpecialPickerProduct(productId){
+    const p=product(productId);if(!p)return;
+    const rep=representativeForFamily(p);const dayRaw=$('#specialWeekday').value;const day=dayRaw===''?null:Number(dayRaw);const editingId=$('#specialId').value||null;
+    const existing=day===null?[]:specialsForDay(day).filter(s=>s.id!==editingId&&familyKey(product(s.product_id))!==familyKey(rep));
+    $('#specialPickConfirmTitle').textContent=day===null?'Selecionar esta marmita?':`Selecionar para ${weekdayInfo(day).label}?`;
+    $('#specialPickConfirmText').textContent=day===null?'Confirme a marmita antes de colocá-la no formulário.':existing.length?`${weekdayInfo(day).label} já possui ${existing.length} ${existing.length===1?'prato':'pratos'}. Escolha como deseja preparar esta seleção. que só será salva quando você confirmar o formulário.`:'Confirme a marmita antes de colocá-la no formulário.';
+    $('#specialPickConfirmChoice').innerHTML=`<span class="special-picker-icon">🍱</span><div><strong>${escapeHtml(rep.name)}</strong><small>Marmita · tamanho e preço serão escolhidos pelo cliente</small></div>`;
+    const box=$('#specialPickConfirmExisting');box.classList.toggle('hidden',!existing.length);box.innerHTML=existing.map(s=>`<div>🍱 <strong>${escapeHtml(product(s.product_id)?.name||'Produto removido')}</strong></div>`).join('');
+    const replace=$('#specialPickConfirmReplace'),add=$('#specialPickConfirmAdd');replace.classList.toggle('hidden',!existing.length);add.textContent=existing.length?'Selecionar e adicionar também':'Confirmar seleção';
+    const picker=$('#specialPickerDialog');if(picker.open)picker.close();const d=$('#specialPickConfirmDialog');
+    const finish=(choice)=>{if(d.open)d.close();if(choice==='cancel'){if(!picker.open){picker.showModal();setTimeout(()=>$('#specialPickerSearch').focus(),0);}return;}setSpecialPickerProduct(rep.id);state.pendingPickerDecision={day,productId:rep.id,choice};};
+    $('#specialPickConfirmCancel').onclick=()=>finish('cancel');
+    $('#specialPickConfirmAdd').onclick=()=>finish(existing.length?'add':'confirm');
+    $('#specialPickConfirmReplace').onclick=()=>finish('replace');
+    d.oncancel=e=>{e.preventDefault();finish('cancel');};d.showModal();
+  }
   function resetSpecialForm(){
-    els.specialForm.reset();$('#specialActive').checked=true;$('#specialId').value='';$('#specialProduct').value='';$('#cancelSpecialEdit').classList.add('hidden');renderSpecialPickerSelection();
+    state.pendingPickerDecision=null;els.specialForm.reset();$('#specialActive').checked=true;$('#specialId').value='';$('#specialProduct').value='';$('#cancelSpecialEdit').classList.add('hidden');renderSpecialPickerSelection();
   }
   function prepareSpecialDay(day){resetSpecialForm();$('#specialWeekday').value=String(day);openSpecialPicker();}
   function editSpecial(id){
@@ -397,7 +413,8 @@
     const row={id:$('#specialId').value||null,weekday:weekdayRaw===''?null:Number(weekdayRaw),product_id:productId,special_price:null,note:$('#specialNote').value.trim()||null,active:$('#specialActive').checked};
     if(row.weekday===null||!row.product_id)throw new Error('Escolha o dia da semana e uma marmita.');const p=product(row.product_id);if(!isMarmitaProduct(p))throw new Error('Prato do dia aceita somente produtos da categoria Marmitas.');
     const duplicate=familySpecialsForDay(row.weekday,p).find(s=>s.id!==row.id);if(duplicate)throw new Error('Esta marmita já está cadastrada nesse dia.');
-    const decision=await showConflict(row.weekday,row.product_id,row.id);if(decision==='cancel')return;if(decision==='replace')await replaceDaySpecials(row.weekday,row.id);
+    const pending=state.pendingPickerDecision;const pendingMatches=pending&&Number(pending.day)===Number(row.weekday)&&familyKey(product(pending.productId))===familyKey(p);
+    let decision=pendingMatches?(pending.choice==='confirm'?'add':pending.choice):await showConflict(row.weekday,row.product_id,row.id);if(decision==='cancel')return;if(decision==='replace')await replaceDaySpecials(row.weekday,row.id);
     await api.saveSpecial(row);await reloadData();resetSpecialForm();toast(`${p.name} salvo em ${weekdayInfo(row.weekday).label}.`,'success');
   }
   async function deleteSpecial(id){const s=state.specials.find(x=>x.id===id),p=s?product(s.product_id):null;if(!confirm(`Excluir “${p?.name||'este prato'}” de ${s?weekdayInfo(s.weekday).label:'prato do dia'}?`))return;await api.deleteSpecial(id);await reloadData();resetSpecialForm();toast('Prato removido da programação.','success');}
@@ -429,6 +446,7 @@
     els.specialForm.addEventListener('submit',async e=>{e.preventDefault();try{await saveSpecial();}catch(err){toast(err.message||'Não foi possível salvar.','error');}});
     $('#cancelSpecialEdit').onclick=resetSpecialForm;
     $('#openSpecialPicker').onclick=openSpecialPicker;
+    $('#specialWeekday').addEventListener('change',()=>{state.pendingPickerDecision=null;});
     $('#closeSpecialPicker').onclick=()=>$('#specialPickerDialog').close();
     $('#specialPickerSearch').addEventListener('input',()=>{$('#clearSpecialPickerSearch').classList.toggle('hidden',!$('#specialPickerSearch').value);renderSpecialPicker();});
     $('#clearSpecialPickerSearch').onclick=()=>{$('#specialPickerSearch').value='';$('#clearSpecialPickerSearch').classList.add('hidden');renderSpecialPicker();$('#specialPickerSearch').focus();};

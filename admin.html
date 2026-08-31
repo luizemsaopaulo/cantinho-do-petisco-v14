@@ -6,12 +6,12 @@
   <meta name="theme-color" content="#b20d18">
   <meta name="robots" content="noindex,nofollow">
   <title>Admin | Cantinho do Petisco</title>
-  <link rel="manifest" href="manifest-admin.webmanifest?v=18">
+  <link rel="manifest" href="manifest-admin.webmanifest?v=19">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Cantinho ADM">
-  <link rel="apple-touch-icon" href="assets/icon-admin-192.png?v=18">
-  <link rel="stylesheet" href="css/styles.css?v=18">
+  <link rel="apple-touch-icon" href="assets/icon-admin-192.png?v=19">
+  <link rel="stylesheet" href="css/styles.css?v=19">
 </head>
 <body class="admin-body">
   <main class="admin-shell">
@@ -273,6 +273,21 @@
     </div>
   </dialog>
 
+  <dialog id="specialPickConfirmDialog" class="app-dialog special-pick-confirm-dialog">
+    <div class="dialog-body">
+      <span class="eyebrow">Confirmar escolha</span>
+      <h2 id="specialPickConfirmTitle">Selecionar esta marmita?</h2>
+      <p id="specialPickConfirmText" class="dialog-description"></p>
+      <div id="specialPickConfirmChoice" class="special-pick-confirm-choice"></div>
+      <div id="specialPickConfirmExisting" class="special-conflict-existing hidden"></div>
+      <div class="special-conflict-actions">
+        <button id="specialPickConfirmCancel" class="secondary-button" type="button">Cancelar</button>
+        <button id="specialPickConfirmReplace" class="secondary-button danger-outline hidden" type="button">Selecionar e substituir atuais</button>
+        <button id="specialPickConfirmAdd" class="primary-button" type="button">Confirmar seleção</button>
+      </div>
+    </div>
+  </dialog>
+
   <dialog id="specialConflictDialog" class="app-dialog special-conflict-dialog">
     <div class="dialog-body">
       <span class="eyebrow">Prato do dia</span>
@@ -294,7 +309,7 @@
   <script src="js/config.js"></script>
   <script src="js/mock-data.js"></script>
   <script src="js/supabase-rest.js"></script>
-  <script src="js/admin.js?v=18"></script>
-  <script src="js/pwa-admin.js?v=18"></script>
+  <script src="js/admin.js?v=19"></script>
+  <script src="js/pwa-admin.js?v=19"></script>
 </body>
 </html>
