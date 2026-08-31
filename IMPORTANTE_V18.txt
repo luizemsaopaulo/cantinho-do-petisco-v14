@@ -1,0 +1,8 @@
+ANTES DE USAR A V18 EM PRODUÇÃO
+
+1. Execute no Supabase SQL Editor:
+   EXECUTAR_NO_SUPABASE_V18.sql
+
+2. Depois publique todos os arquivos no GitHub.
+
+Sem essa migração, o banco antigo ainda limita o Prato do dia a um único produto por dia e a nova função de múltiplos pratos não funcionará corretamente.

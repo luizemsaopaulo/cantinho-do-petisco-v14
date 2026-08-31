@@ -426,7 +426,7 @@
       if (!s) throw new Error('Sessão expirada.');
       if (C.DEMO_MODE) {
         const row = { ...special, id: special.id || `special-${Date.now()}` };
-        const i = window.MOCK_MENU.daily_specials.findIndex(x => x.id === row.id || Number(x.weekday) === Number(row.weekday));
+        const i = window.MOCK_MENU.daily_specials.findIndex(x => x.id === row.id);
         if (i >= 0) window.MOCK_MENU.daily_specials[i] = structuredClone(row); else window.MOCK_MENU.daily_specials.push(structuredClone(row));
         return row;
       }
@@ -437,8 +437,8 @@
         });
         return rows?.[0] || null;
       }
-      const rows = await this.request('/rest/v1/daily_specials?on_conflict=weekday', {
-        method: 'POST', headers: this.baseHeaders(s.access_token, { Prefer: 'resolution=merge-duplicates,return=representation' }), body: JSON.stringify(body)
+      const rows = await this.request('/rest/v1/daily_specials', {
+        method: 'POST', headers: this.baseHeaders(s.access_token, { Prefer: 'return=representation' }), body: JSON.stringify(body)
       });
       return rows?.[0] || null;
     }

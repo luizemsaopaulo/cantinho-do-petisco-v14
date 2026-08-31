@@ -1,0 +1,16 @@
+CANTINHO DO PETISCO — ALTERAÇÕES V18
+
+1. Prato do dia agora permite múltiplas marmitas no mesmo dia.
+2. Conflito de dia já ocupado: Adicionar também / Substituir atuais / Cancelar.
+3. Seletor visual com busca, somente Marmitas.
+4. P/M/G agrupados em um único nome no seletor, sem preço e sem tamanho.
+5. Programação semanal reorganizada por dia e por lista de pratos.
+6. Editor de Marmita permite selecionar vários dias da semana.
+7. Itens fora de Marmitas não podem ser Prato do dia.
+8. Cliente recebe vários cards de Prato do dia e só vê tamanho/preço depois de abrir.
+9. Arroz carreteiro M 24,99 e G 29,99 incluído pela migração.
+10. Adicionais padronizados para todas as marmitas; Feijoada recebe Bisteca/Toscana.
+11. Frango com creme de milho exige Empanado/Grelhado.
+12. Cache/PWA atualizado para v18.
+13. Login persistente do ADM/PWA da V17 foi preservado.
+14. Menu lateral esquerdo do ADM foi preservado.

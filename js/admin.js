@@ -27,6 +27,15 @@
   function product(id){return state.products.find(p=>p.id===id)}
   function imgUrl(path){return path?api.publicImageUrl(path):''}
   function weekdayInfo(value){return WEEKDAYS.find(d=>d.value===Number(value))||{value:Number(value),label:'Dia não definido',short:'—'};}
+  function marmitaCategory(){return state.categories.find(c=>normalize(c.slug)==='marmitas'||normalize(c.name)==='marmitas')||null;}
+  function isMarmitaProduct(p){const c=p?cat(p.category_id):null;return !!c&&(normalize(c.slug)==='marmitas'||normalize(c.name)==='marmitas');}
+  function familyKey(p){return p?`${p.category_id}|${normalize(p.name)}`:'';}
+  function familyProducts(p){if(!p)return[];const key=familyKey(p);return state.products.filter(x=>familyKey(x)===key).sort((a,b)=>String(a.size||'').localeCompare(String(b.size||''),'pt-BR'));}
+  function representativeForFamily(p){return familyProducts(p).find(x=>x.active!==false)||familyProducts(p)[0]||p;}
+  function marmitaFamilies(){const m=new Map();for(const p of state.products.filter(x=>x.active&&isMarmitaProduct(x))){const k=familyKey(p);if(!m.has(k))m.set(k,{key:k,name:p.name,products:[]});m.get(k).products.push(p);}return[...m.values()].map(g=>({...g,products:g.products.sort((a,b)=>String(a.size||'').localeCompare(String(b.size||''),'pt-BR'))})).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR'));}
+  function familySpecialsForDay(day,p){const key=familyKey(p);return state.specials.filter(s=>Number(s.weekday)===Number(day)&&familyKey(product(s.product_id))===key);}
+  function specialsForDay(day){return state.specials.filter(s=>Number(s.weekday)===Number(day));}
+  function specialsForFamily(p){const key=familyKey(p);return state.specials.filter(s=>familyKey(product(s.product_id))===key);}
   function groupsForProduct(productId){return state.optionGroups.filter(g=>g.product_id===productId).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));}
   function optionsForGroup(groupId){return state.productOptions.filter(o=>o.group_id===groupId).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));}
   function cloneProductOptionModel(productId){return groupsForProduct(productId).map(g=>({...g,options:optionsForGroup(g.id).map(o=>({...o}))}));}
@@ -177,8 +186,7 @@
     const options=state.categories.map(c=>`<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`).join('');
     const currentFilter=els.filter.value;els.filter.innerHTML='<option value="">Todas as categorias</option>'+options;els.filter.value=currentFilter;
     $('#productCategory').innerHTML=options;
-    const activeProducts=state.products.filter(p=>p.active).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR')||(a.size||'').localeCompare(b.size||''));
-    $('#specialProduct').innerHTML='<option value="">Selecione...</option>'+activeProducts.map(p=>`<option value="${escapeHtml(p.id)}">${escapeHtml(p.name)}${p.size?` · ${escapeHtml(p.size)}`:''} — ${p.price!=null?money.format(Number(p.price)):'sem preço'}</option>`).join('');
+    renderSpecialPickerSelection();
   }
   function statusPill(p){
     if(!p.active)return '<span class="status-pill off">Não publicado</span>';
@@ -276,62 +284,89 @@
   }
   function renderSpecials(){
     els.specialList.innerHTML=WEEKDAYS.map(day=>{
-      const s=state.specials.find(x=>Number(x.weekday)===day.value);
-      const p=s?product(s.product_id):null;
-      if(!s){return `<div class="weekday-row empty"><div class="weekday-name"><span>${day.short}</span><strong>${day.label}</strong></div><div class="weekday-empty">Nenhum prato definido</div><button type="button" class="edit-row" data-new-weekday="${day.value}">Definir</button></div>`;}
-      return `<div class="weekday-row ${s.active?'':'inactive'}">
-        <div class="weekday-name"><span>${day.short}</span><strong>${day.label}</strong></div>
-        <div class="weekday-product"><strong>${escapeHtml(p?.name||'Produto removido')}${p?.size?` (${escapeHtml(p.size)})`:''}</strong><small>${escapeHtml(s.note||'Sem observação')}</small></div>
-        <div class="weekday-price">${s.special_price!=null?money.format(Number(s.special_price)):'Preço normal'}<small>${s.active?'Ativo':'Inativo'}</small></div>
-        <div class="weekday-actions"><button type="button" class="edit-row" data-edit-special="${escapeHtml(s.id)}">Editar</button><button type="button" class="delete-mini" data-del-special="${escapeHtml(s.id)}">Excluir</button></div>
-      </div>`;
+      const daySpecials=specialsForDay(day.value).sort((a,b)=>{
+        const pa=product(a.product_id),pb=product(b.product_id);return (pa?.name||'').localeCompare(pb?.name||'','pt-BR');
+      });
+      if(!daySpecials.length){return `<section class="weekday-group empty"><header class="weekday-group-head"><div class="weekday-name"><span>${day.short}</span><strong>${day.label}</strong></div><button type="button" class="edit-row" data-new-weekday="${day.value}">+ Adicionar prato</button></header><div class="weekday-empty">Nenhuma marmita definida</div></section>`;}
+      const rows=daySpecials.map(s=>{const p=product(s.product_id);return `<article class="weekday-special-item ${s.active?'':'inactive'}"><div class="weekday-product"><strong>${escapeHtml(p?.name||'Produto removido')}</strong><small>${escapeHtml(s.note||'Preço e tamanho são escolhidos no produto')}</small></div><div class="weekday-status"><span class="status-pill ${s.active?'ok':'off'}">${s.active?'Ativo':'Inativo'}</span></div><div class="weekday-actions"><button type="button" class="edit-row" data-edit-special="${escapeHtml(s.id)}">Editar</button><button type="button" class="delete-mini" data-del-special="${escapeHtml(s.id)}">Excluir</button></div></article>`;}).join('');
+      return `<section class="weekday-group"><header class="weekday-group-head"><div class="weekday-name"><span>${day.short}</span><strong>${day.label}</strong><small>${daySpecials.length} ${daySpecials.length===1?'prato':'pratos'}</small></div><button type="button" class="edit-row" data-new-weekday="${day.value}">+ Adicionar prato</button></header><div class="weekday-special-items">${rows}</div></section>`;
     }).join('');
     els.specialList.querySelectorAll('[data-edit-special]').forEach(b=>b.onclick=()=>editSpecial(b.dataset.editSpecial));
     els.specialList.querySelectorAll('[data-del-special]').forEach(b=>b.onclick=()=>deleteSpecial(b.dataset.delSpecial));
     els.specialList.querySelectorAll('[data-new-weekday]').forEach(b=>b.onclick=()=>prepareSpecialDay(Number(b.dataset.newWeekday)));
   }
-  function resetSpecialForm(){
-    els.specialForm.reset();$('#specialActive').checked=true;$('#specialId').value='';$('#cancelSpecialEdit').classList.add('hidden');
+  function setSpecialPickerProduct(productId){
+    const p=product(productId);const rep=p?representativeForFamily(p):null;
+    $('#specialProduct').value=rep?.id||'';
+    renderSpecialPickerSelection();
   }
-  function prepareSpecialDay(day){resetSpecialForm();$('#specialWeekday').value=String(day);$('#specialProduct').focus();}
+  function renderSpecialPickerSelection(){
+    const p=product($('#specialProduct')?.value);const label=$('#specialPickerLabel'),hint=$('#specialPickerHint');if(!label||!hint)return;
+    if(!p){label.textContent='Escolher marmita';hint.textContent='Somente marmitas · sem tamanho e sem preço nesta etapa';return;}
+    label.textContent=p.name;const variants=familyProducts(p);hint.textContent=variants.length>1?`${variants.length} tamanhos cadastrados · valores ficam dentro do prato`:'Marmita selecionada · valor fica dentro do prato';
+  }
+  function renderSpecialPicker(){
+    const q=normalize($('#specialPickerSearch')?.value||'');const families=marmitaFamilies().filter(g=>!q||normalize(g.name).includes(q));
+    const root=$('#specialPickerList'),empty=$('#specialPickerEmpty');if(!root)return;
+    root.innerHTML=families.map(g=>{const rep=g.products[0];return `<button type="button" class="special-picker-row" data-pick-special="${escapeHtml(rep.id)}"><span class="special-picker-icon">🍱</span><span><strong>${escapeHtml(g.name)}</strong><small>Marmita${g.products.length>1?` · ${g.products.length} tamanhos disponíveis`:''}</small></span><b aria-hidden="true">›</b></button>`;}).join('');
+    empty?.classList.toggle('hidden',families.length>0);
+    root.querySelectorAll('[data-pick-special]').forEach(b=>b.onclick=()=>{setSpecialPickerProduct(b.dataset.pickSpecial);$('#specialPickerDialog').close();});
+  }
+  function openSpecialPicker(){
+    $('#specialPickerSearch').value='';$('#clearSpecialPickerSearch').classList.add('hidden');renderSpecialPicker();$('#specialPickerDialog').showModal();setTimeout(()=>$('#specialPickerSearch').focus(),0);
+  }
+  function resetSpecialForm(){
+    els.specialForm.reset();$('#specialActive').checked=true;$('#specialId').value='';$('#specialProduct').value='';$('#cancelSpecialEdit').classList.add('hidden');renderSpecialPickerSelection();
+  }
+  function prepareSpecialDay(day){resetSpecialForm();$('#specialWeekday').value=String(day);openSpecialPicker();}
   function editSpecial(id){
     const s=state.specials.find(x=>x.id===id);if(!s)return;
-    $('#specialId').value=s.id;$('#specialWeekday').value=String(s.weekday);$('#specialProduct').value=s.product_id;$('#specialPrice').value=s.special_price??'';$('#specialNote').value=s.note||'';$('#specialActive').checked=s.active!==false;$('#cancelSpecialEdit').classList.remove('hidden');
+    $('#specialId').value=s.id;$('#specialWeekday').value=String(s.weekday);setSpecialPickerProduct(s.product_id);$('#specialNote').value=s.note||'';$('#specialActive').checked=s.active!==false;$('#cancelSpecialEdit').classList.remove('hidden');
     $('#specialWeekday').scrollIntoView({behavior:'smooth',block:'center'});
   }
-  function specialsForProduct(productId){
-    return state.specials.filter(s=>s.product_id===productId);
+  function showConflict(day,newProductId,ignoreId=null){
+    const p=product(newProductId);const sameFamilyKey=familyKey(p);
+    const existing=specialsForDay(day).filter(s=>s.id!==ignoreId&&familyKey(product(s.product_id))!==sameFamilyKey);
+    if(!existing.length)return Promise.resolve('add');
+    const info=weekdayInfo(day);$('#specialConflictTitle').textContent=`${info.label} já tem ${existing.length} ${existing.length===1?'prato':'pratos'}`;
+    $('#specialConflictText').textContent=`Você está adicionando “${p?.name||'este prato'}”. O que deseja fazer com os pratos que já estão em ${info.label.toLowerCase()}?`;
+    $('#specialConflictExisting').innerHTML=existing.map(s=>`<div>🍱 <strong>${escapeHtml(product(s.product_id)?.name||'Produto removido')}</strong></div>`).join('');
+    return new Promise(resolve=>{const d=$('#specialConflictDialog');let done=false;const finish=value=>{if(done)return;done=true;d.close();resolve(value);};$('#specialConflictAdd').onclick=()=>finish('add');$('#specialConflictReplace').onclick=()=>finish('replace');$('#specialConflictCancel').onclick=()=>finish('cancel');d.oncancel=e=>{e.preventDefault();finish('cancel');};d.showModal();});
+  }
+  async function replaceDaySpecials(day,exceptId=null){for(const s of specialsForDay(day)){if(s.id!==exceptId)await api.deleteSpecial(s.id);}}
+  function syncProductSpecialAvailability(){
+    const categoryId=$('#productCategory').value;const c=cat(categoryId);const allowed=!!c&&(normalize(c.slug)==='marmitas'||normalize(c.name)==='marmitas');
+    $('#productSpecialControls').classList.toggle('hidden',!allowed);$('#productSpecialCategoryWarning').classList.toggle('hidden',allowed);
+    if(!allowed){$('#productDailySpecial').checked=false;document.querySelectorAll('[data-product-special-day]').forEach(x=>x.checked=false);}syncProductSpecialFields();
   }
   function syncProductSpecialFields(){
-    const enabled=$('#productDailySpecial').checked;
-    $('#productSpecialFields').classList.toggle('hidden',!enabled);
-    $('#productSpecialWeekday').required=enabled;
+    const enabled=$('#productDailySpecial').checked&&!$('#productSpecialControls').classList.contains('hidden');$('#productSpecialFields').classList.toggle('hidden',!enabled);
+    renderProductSpecialExisting();
   }
+  function selectedProductSpecialDays(){return [...document.querySelectorAll('[data-product-special-day]:checked')].map(x=>Number(x.dataset.productSpecialDay));}
   function loadProductSpecialState(productId){
-    const existing=productId?specialsForProduct(productId):[];
-    const first=existing[0]||null;
-    $('#productDailySpecial').checked=!!first;
-    $('#productSpecialWeekday').value=first?String(first.weekday):'';
-    syncProductSpecialFields();
+    const p=productId?product(productId):null;const existing=p?specialsForFamily(p):[];const days=new Set(existing.map(s=>Number(s.weekday)));
+    $('#productDailySpecial').checked=days.size>0;document.querySelectorAll('[data-product-special-day]').forEach(x=>x.checked=days.has(Number(x.dataset.productSpecialDay)));syncProductSpecialAvailability();
   }
-  async function saveProductSpecial(productId){
-    const enabled=$('#productDailySpecial').checked;
-    const current=specialsForProduct(productId);
-    if(!enabled){
-      for(const s of current) await api.deleteSpecial(s.id);
-      return;
-    }
-    const weekdayRaw=$('#productSpecialWeekday').value;
-    if(weekdayRaw==='')throw new Error('Escolha o dia da semana do prato do dia.');
-    const weekday=Number(weekdayRaw);
-    const slot=state.specials.find(s=>Number(s.weekday)===weekday)||null;
-    const previous=current[0]||null;
-    await api.saveSpecial({id:slot?.id||null,weekday,product_id:productId,special_price:previous?.special_price??null,note:previous?.note??null,active:true});
-    for(const s of current){
-      if(s.id!==slot?.id && Number(s.weekday)!==weekday) await api.deleteSpecial(s.id);
+  function renderProductSpecialExisting(){
+    const root=$('#productSpecialExisting');if(!root)return;const selected=selectedProductSpecialDays();
+    if(!selected.length){root.innerHTML='<small>Selecione os dias em que este prato deve aparecer.</small>';return;}
+    root.innerHTML=selected.map(day=>{const others=specialsForDay(day).filter(s=>state.editing?familyKey(product(s.product_id))!==familyKey(state.editing):true);return `<div class="product-special-day-status"><strong>${escapeHtml(weekdayInfo(day).label)}</strong><small>${others.length?`Já cadastrado: ${others.map(s=>product(s.product_id)?.name||'Produto removido').join(', ')}`:'Nenhum outro prato cadastrado'}</small></div>`;}).join('');
+  }
+  async function saveProductSpecial(productId,productRow=null){
+    const p=product(productId)||productRow;if(!p||!isMarmitaProduct(p))return;
+    const enabled=$('#productDailySpecial').checked;const current=specialsForFamily(p);const desired=enabled?new Set(selectedProductSpecialDays()):new Set();
+    if(enabled&&!desired.size)throw new Error('Escolha pelo menos um dia da semana para o prato do dia.');
+    const decisions=new Map();
+    for(const day of desired){const same=familySpecialsForDay(day,p)[0]||null;if(same)continue;const decision=await showConflict(day,productId,null);if(decision==='cancel')throw new Error('Alteração do prato do dia cancelada.');decisions.set(day,decision);}
+    for(const s of current){if(!desired.has(Number(s.weekday)))await api.deleteSpecial(s.id);}
+    for(const day of desired){
+      const same=familySpecialsForDay(day,p)[0]||null;
+      if(same){if(same.active===false)await api.saveSpecial({...same,active:true});continue;}
+      if(decisions.get(day)==='replace')await replaceDaySpecials(day);
+      await api.saveSpecial({id:null,weekday:day,product_id:representativeForFamily(p).id,special_price:null,note:null,active:true});
     }
   }
-
   function openProduct(id=null){
     state.editing=id?product(id):null;state.imageRemoved=false; const p=state.editing;
     state.editingOptionGroups=p?cloneProductOptionModel(p.id):[];
@@ -351,19 +386,21 @@
     readOptionEditor();
     let image_path=state.editing?.image_path||null;if(state.imageRemoved)image_path=null;const file=$('#productImage').files?.[0];if(file){$('#saveProductBtn').textContent='Enviando foto…';image_path=await api.uploadProductImage(file);}
     const row={id,category_id,name,slug:uniqueSlug(name,size,category_id,id),size,description:$('#productDescription').value.trim()||null,price:Number(priceRaw),image_path,allow_notes:$('#productAllowNotes').checked,notes_max_length:state.editing?.notes_max_length??null,active:$('#productActive').checked,available:$('#productAvailable').checked,featured:$('#productFeatured').checked,sort_order:Math.max(0,Number($('#productOrder').value)||0)};
-    const saved=await api.saveProduct(row);if(!saved?.id)throw new Error('O produto não retornou um ID após salvar.');$('#saveProductBtn').textContent='Salvando opções…';await saveOptionEditor(saved.id);$('#saveProductBtn').textContent='Salvando prato do dia…';await saveProductSpecial(saved.id);await reloadData();els.productDialog.close();toast('Produto, opções e prato do dia salvos com sucesso.','success');
+    const saved=await api.saveProduct(row);if(!saved?.id)throw new Error('O produto não retornou um ID após salvar.');$('#saveProductBtn').textContent='Salvando opções…';await saveOptionEditor(saved.id);$('#saveProductBtn').textContent='Salvando prato do dia…';await saveProductSpecial(saved.id,saved);await reloadData();els.productDialog.close();toast('Produto, opções e prato do dia salvos com sucesso.','success');
   }
   async function deleteProduct(id){
     const p=product(id);if(!p)return;if(!confirm(`Excluir “${p.name}”? Esta ação não pode ser desfeita.`))return;
     await api.deleteProduct(id);await reloadData();els.productDialog.close();toast('Produto excluído.','success');
   }
   async function saveSpecial(){
-    const weekdayRaw=$('#specialWeekday').value;
-    const row={id:$('#specialId').value||null,weekday:weekdayRaw===''?null:Number(weekdayRaw),product_id:$('#specialProduct').value,special_price:$('#specialPrice').value===''?null:Number($('#specialPrice').value),note:$('#specialNote').value.trim()||null,active:$('#specialActive').checked};
-    if(row.weekday===null||!row.product_id)throw new Error('Escolha o dia da semana e o produto.');
-    await api.saveSpecial(row);await reloadData();resetSpecialForm();toast(`${weekdayInfo(row.weekday).label} salva com sucesso.`,'success');
+    const weekdayRaw=$('#specialWeekday').value;const productId=$('#specialProduct').value;
+    const row={id:$('#specialId').value||null,weekday:weekdayRaw===''?null:Number(weekdayRaw),product_id:productId,special_price:null,note:$('#specialNote').value.trim()||null,active:$('#specialActive').checked};
+    if(row.weekday===null||!row.product_id)throw new Error('Escolha o dia da semana e uma marmita.');const p=product(row.product_id);if(!isMarmitaProduct(p))throw new Error('Prato do dia aceita somente produtos da categoria Marmitas.');
+    const duplicate=familySpecialsForDay(row.weekday,p).find(s=>s.id!==row.id);if(duplicate)throw new Error('Esta marmita já está cadastrada nesse dia.');
+    const decision=await showConflict(row.weekday,row.product_id,row.id);if(decision==='cancel')return;if(decision==='replace')await replaceDaySpecials(row.weekday,row.id);
+    await api.saveSpecial(row);await reloadData();resetSpecialForm();toast(`${p.name} salvo em ${weekdayInfo(row.weekday).label}.`,'success');
   }
-  async function deleteSpecial(id){if(!confirm('Excluir a programação deste dia?'))return;await api.deleteSpecial(id);await reloadData();resetSpecialForm();toast('Programação excluída.','success');}
+  async function deleteSpecial(id){const s=state.specials.find(x=>x.id===id),p=s?product(s.product_id):null;if(!confirm(`Excluir “${p?.name||'este prato'}” de ${s?weekdayInfo(s.weekday).label:'prato do dia'}?`))return;await api.deleteSpecial(id);await reloadData();resetSpecialForm();toast('Prato removido da programação.','success');}
 
   function switchTab(name){
     document.querySelectorAll('.admin-tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===name));
@@ -380,6 +417,8 @@
     $('#collapseAllCategories').onclick=()=>{state.categories.forEach(c=>state.collapsedCategories.add(c.id));renderProducts();};
     $('#newProductBtn').onclick=()=>openProduct();
     $('#productDailySpecial').addEventListener('change',syncProductSpecialFields);
+    $('#productCategory').addEventListener('change',syncProductSpecialAvailability);
+    document.querySelectorAll('[data-product-special-day]').forEach(x=>x.addEventListener('change',renderProductSpecialExisting));
     $('#addOptionGroupBtn').onclick=()=>{readOptionEditor();state.editingOptionGroups.push({id:null,code:null,name:'',selection_type:'single',required:false,min_selections:null,max_selections:1,sort_order:state.editingOptionGroups.length+1,active:true,options:[]});renderOptionEditor();};
     els.productForm.addEventListener('submit',async e=>{e.preventDefault();const btn=$('#saveProductBtn');btn.disabled=true;const old=btn.textContent;try{await saveProduct();}catch(err){toast(err.message||'Não foi possível salvar.','error');}finally{btn.disabled=false;btn.textContent=old;}});
     $('#closeProductDialog').onclick=()=>els.productDialog.close();
@@ -389,6 +428,10 @@
     $('#removeImageBtn').onclick=()=>{$('#productImage').value='';$('#imagePreview').removeAttribute('src');$('#imagePreviewBox').classList.add('hidden');state.imageRemoved=true;};
     els.specialForm.addEventListener('submit',async e=>{e.preventDefault();try{await saveSpecial();}catch(err){toast(err.message||'Não foi possível salvar.','error');}});
     $('#cancelSpecialEdit').onclick=resetSpecialForm;
+    $('#openSpecialPicker').onclick=openSpecialPicker;
+    $('#closeSpecialPicker').onclick=()=>$('#specialPickerDialog').close();
+    $('#specialPickerSearch').addEventListener('input',()=>{$('#clearSpecialPickerSearch').classList.toggle('hidden',!$('#specialPickerSearch').value);renderSpecialPicker();});
+    $('#clearSpecialPickerSearch').onclick=()=>{$('#specialPickerSearch').value='';$('#clearSpecialPickerSearch').classList.add('hidden');renderSpecialPicker();$('#specialPickerSearch').focus();};
   }
   initEvents();boot();
 })();

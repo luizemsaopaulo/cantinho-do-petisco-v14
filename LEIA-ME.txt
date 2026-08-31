@@ -1,48 +1,37 @@
-CANTINHO DO PETISCO — V17
+CANTINHO DO PETISCO — V18
 
-PÁGINAS
-- index.html = Delivery e retirada
-- restaurante.html = Cardápio completo do restaurante
-- admin.html = Painel administrativo
+PRINCIPAIS MUDANÇAS
+- Prato do dia aceita mais de uma marmita no mesmo dia.
+- Ao adicionar em um dia que já tem pratos, o ADM pergunta: Adicionar também / Substituir atuais / Cancelar.
+- O seletor de Prato do dia mostra SOMENTE Marmitas.
+- O seletor agrupa P/M/G pelo nome: aparece uma vez, sem tamanho e sem preço.
+- No cliente, o bloco Prato do dia também mostra o nome limpo; tamanho e preço aparecem só depois que o cliente abre o prato.
+- No editor da Marmita é possível marcar vários dias da semana.
+- Produtos de outras categorias não podem virar Prato do dia.
 
-REPOSITÓRIO ATUAL
-- cantinho-do-petisco-v14
+DADOS INCLUÍDOS NA MIGRAÇÃO V18
+- Arroz carreteiro M — R$ 24,99.
+- Arroz carreteiro G — R$ 29,99.
+- Todas as marmitas (exceto Feijoada): Nenhum, Ovo 3, Frango empanado 10, Contra-filé empanado 15, Porção arroz 10, Porção feijão 10, Salada pequena 3.
+- Feijoada: mesma lista + Bisteca 10 + Toscana 10.
+- Frango com creme de milho: escolha obrigatória Empanado/Grelhado.
 
-PWA
-- Cliente: PWA “Cantinho do Petisco”
-- Admin: PWA separado “Cantinho Admin”
-- Cliente só recebe sugestão de instalação quando o navegador permite e após interação.
-- Se dispensar, a sugestão fica suspensa por 30 dias.
-- Quando aberto como app instalado, a sugestão não aparece.
+IMPORTANTE — SUPABASE
+Antes de usar a V18 em produção, execute no SQL Editor:
+  supabase/MIGRACAO_V18_PRATO_DO_DIA_MARMITAS.sql
 
-ADMIN V17
-O painel voltou ao formato limpo. As ferramentas extras ficam dentro do menu de três linhas no cabeçalho.
+Essa migração é necessária para permitir mais de um Prato do dia no mesmo dia da semana.
 
-Itens do menu:
-1. Instalar Cantinho Admin
-2. Abrir página Delivery
-3. Abrir página Restaurante
-4. Compartilhar Delivery
-5. Compartilhar Restaurante
-6. QR Code Delivery
-7. QR Code Restaurante
+STROGONOFF
+O preço da opção Carne ainda não foi informado. A V18 NÃO inventa esse preço. O sistema de opções do ADM está pronto para configurar Frango/Carne assim que os valores corretos forem definidos.
 
-Os antigos botões “Copiar link” foram removidos.
-O menu bloqueia clique e rolagem do fundo enquanto está aberto e fecha pelo X, clique fora ou ESC.
+REPOSITÓRIO PUBLICADO
+cantinho-do-petisco-v14
 
-ADICIONAIS
-- Continuam permitindo quantidade individual.
-- Quantidade ilimitada por padrão.
-- O ADM pode desativar quantidade ou definir limite por adicional.
-
-SUPABASE
-Se esta instalação ainda não recebeu a migração de quantidade, execute:
-  supabase/MIGRACAO_QUANTIDADE_ADICIONAIS_V9.sql
-
-WHATSAPP / PREVIEW
-- Imagem: assets/whatsapp-preview-v2.jpg
-- Metadados sociais usam o repositório cantinho-do-petisco-v14 e cache-busting ?v=17.
+LINKS
+Delivery: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/?v=18
+Restaurante: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/restaurante.html?v=18
+Admin: https://luizemsaopaulo.github.io/cantinho-do-petisco-v14/admin.html?v=18
 
 DEPURAÇÃO
-- Relatório atual: DEPURACAO_CHROMIUM_V17.txt
-- Chromium real: menu ADM desktop/mobile, bloqueio do fundo, ações, QR, links e regressão do Delivery.
+Ver DEPURACAO_CHROMIUM_V18.txt.
